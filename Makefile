@@ -9,6 +9,7 @@ BINDIR = /usr/bin
 SRCDIR = src
 
 OBJ+=$(SRCDIR)/main.o
+OBJ+=$(SRCDIR)/init.o
 
 all: $(PROGNAME)
 
