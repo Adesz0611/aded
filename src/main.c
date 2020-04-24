@@ -14,10 +14,7 @@
 
 int main (int argc, const char *argv[]) {
     init();
-    mvprintw(0, 0, "u8: %ld", sizeof(u8));
-    mvprintw(1, 0, "u16: %ld", sizeof(u16));
-    mvprintw(2, 0, "u32: %ld", sizeof(u32));
-    mvprintw(3, 0, "u64: %ld", sizeof(u64));
+    init_args(argc, argv);
     getch();
     clean();
     return 0;

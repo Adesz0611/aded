@@ -1,3 +1,4 @@
+#pragma once
 #define MAXLINE 4096
 #define MAX_FILENAME 256 // Changed from 64 bytes
 
