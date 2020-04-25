@@ -1,3 +1,3 @@
 #pragma once
-void print_usage(int status);
-void print_version(int status);
+void print_usage(void);
+void print_version(void);

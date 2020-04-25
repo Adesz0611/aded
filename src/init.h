@@ -12,6 +12,7 @@ typedef struct {
     int termY;
 } Init;
 
+void init(void);
 void clean(void);
 
 Init *init_t;

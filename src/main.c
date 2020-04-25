@@ -13,33 +13,50 @@
 #include "line.h"
 #include "curses.h"
 #include "print.h"
+#include "display.h"
+#include "buffer.h"
+#include "input.h"
+#include "file.h"
 
-int main (int argc, const char *argv[]) {
+int main (int argc, const char *argv[])
+{
+    atexit(clean);
+
+    // init
+    file_init();
+    curses_init();
+    buffer_init();
+    line_init();
 
     if(argc > 1)
     {
         if(!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help"))
         {
-            print_usage(EXIT_FAILURE);
+            print_usage();
+            return EXIT_FAILURE;
         }
         
         else if(!strcmp(argv[1], "--version"))
         {
-            print_version(EXIT_FAILURE);
+            print_version();
+            return EXIT_FAILURE;
+        }
+        else
+        {
+            scpy(file->filename, argv[1]);
         }
     }
-    /*else
-    {
-        strncpy(init_t->filename, argv[1], MAX_FILENAME - 1);
-    }*/
 
-    curses_init();
-    line_init();
+    line_add(""); // First line
+
 
     while(1)
     {
-        curses_one_loop();
+       display_buffer();
+       move(buffer->cursY, buffer->cursX);
+       input();
     }
-
+    
+    clean();
     return 0;
 }

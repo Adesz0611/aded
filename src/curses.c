@@ -11,6 +11,7 @@ void curses_init(void)
     initscr();
     cbreak();
     noecho();
+    keypad(stdscr, true);
     
     init_t = (Init *)malloc(sizeof(*init_t));
     memset(init_t, 0, sizeof(*init_t));
@@ -25,5 +26,5 @@ void curses_one_loop(void)
 
 void curses_clean(void)
 {
-    clean();
+    endwin();
 }

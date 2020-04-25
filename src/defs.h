@@ -7,3 +7,5 @@
 #define KEY_TAB 9
 
 #define TAB_WIDTH 4
+
+#define scpy(dst, src) strncpy((dst), (src), (sizeof(dst)) - 1)
