@@ -11,6 +11,8 @@ SRCDIR = src
 OBJ+=$(SRCDIR)/main.o
 OBJ+=$(SRCDIR)/init.o
 OBJ+=$(SRCDIR)/line.o
+OBJ+=$(SRCDIR)/curses.o
+OBJ+=$(SRCDIR)/print.o
 
 all: $(PROGNAME)
 

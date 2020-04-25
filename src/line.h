@@ -1,5 +1,7 @@
 #pragma once
+
 #include <stdio.h>
+
 typedef struct {
     char *buffer;
     size_t size;
@@ -7,8 +9,9 @@ typedef struct {
     struct line_t *next;
 } line_t;
 
-line_t *line_head = NULL;
-line_t *line_tail = NULL;
-line_t *line_current = NULL;
-
+void line_init(void);
 line_t line_add(const char *text);
+
+line_t *line_head;
+line_t *line_tail;
+line_t *line_current;

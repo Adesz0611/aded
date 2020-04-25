@@ -12,9 +12,6 @@ typedef struct {
     int termY;
 } Init;
 
-void init(void);
-void init_args(int argc, const char *argv[]);
-void init_line(void);
 void clean(void);
 
 Init *init_t;
