@@ -4,7 +4,6 @@
 #include <unistd.h>
 #include <errno.h>
 
-#include "init.h"
 #include "curses.h"
 #include "input.h"
 #include "buffer.h"

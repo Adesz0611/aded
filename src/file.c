@@ -34,6 +34,5 @@ void file_save(void)
         fprintf(f, "%s", tmp->buffer);
     }
     fclose(f);
-    //exit(1);
 }
 

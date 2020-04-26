@@ -7,7 +7,6 @@
 #include <string.h>
 #include <errno.h>
 
-#include "init.h"
 #include "types.h"
 #include "defs.h"
 #include "line.h"
@@ -18,16 +17,15 @@
 #include "input.h"
 #include "file.h"
 
+static void destroy(void);
+
 int main (int argc, const char *argv[])
 {
-    atexit(clean);
+    atexit(destroy);
 
     // init
     file_init();
-    curses_init();
-    buffer_init();
-    line_init();
-
+    
     if(argc > 1)
     {
         if(!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help"))
@@ -46,6 +44,9 @@ int main (int argc, const char *argv[])
             scpy(file->filename, argv[1]);
         }
     }
+    curses_init();
+    buffer_init();
+    line_init();
 
     line_add(""); // First line
 
@@ -57,6 +58,11 @@ int main (int argc, const char *argv[])
        input();
     }
     
-    clean();
     return 0;
+}
+
+static void destroy(void)
+{
+    // Destroy
+    curses_clean();
 }

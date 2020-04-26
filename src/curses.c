@@ -2,8 +2,6 @@
 #include <string.h>
 
 #include "curses.h"
-#include "init.h"
-
 
 void curses_init(void)
 {
@@ -13,10 +11,10 @@ void curses_init(void)
     noecho();
     keypad(stdscr, true);
     
-    init_t = (Init *)malloc(sizeof(*init_t));
-    memset(init_t, 0, sizeof(*init_t));
+    curses = (curses_t *)malloc(sizeof(*curses));
+    memset(curses, 0, sizeof(*curses));
 
-    getmaxyx(stdscr, init_t->termY, init_t->termX);
+    getmaxyx(stdscr, curses->termY, curses->termX);
 }
 
 void curses_one_loop(void)
