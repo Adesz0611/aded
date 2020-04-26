@@ -13,6 +13,8 @@
 
 static wchar_t input_wchar;
 
+static void move_home(void);
+static void move_end(void);
 static void move_left(void);
 static void move_right(void);
 
@@ -32,6 +34,27 @@ void input(void)
             line_add("");
             buffer->cursY++;
             buffer->cursX = 0;
+            break;
+        case KEY_BACKSPACE:
+            if(buffer->cursX != 0)
+            {
+                buffer->cursX--;
+                memmove(&line_current->buffer[buffer->cursX], &line_current->buffer[buffer->cursX + 1], line_current->size - buffer->cursX);
+                line_current->size--;
+            }
+            break;
+        case KEY_DC:
+            if(line_current->size > 0)
+            {
+                memmove(&line_current->buffer[buffer->cursX], &line_current->buffer[buffer->cursX + 1], line_current->size - buffer->cursX);
+                line_current->size--;
+            }
+            break;
+        case KEY_HOME:
+            move_home();
+            break;
+        case KEY_END:
+            move_end();
             break;
         case KEY_LEFT:
             move_left();
@@ -53,6 +76,16 @@ void input(void)
     }
 }
 
+static void move_home(void)
+{
+    buffer->cursX = 0;
+}
+
+static void move_end(void)
+{
+    buffer->cursX = (int)line_current->size;
+}
+
 static void move_left(void)
 {
     if(buffer->cursX > 0)
@@ -64,4 +97,3 @@ static void move_right(void)
     if(buffer->cursX < (int)line_current->size)
         buffer->cursX++;
 }
-
