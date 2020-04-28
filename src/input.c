@@ -15,6 +15,8 @@ static wchar_t input_wchar;
 
 static void move_home(void);
 static void move_end(void);
+static void move_up(void);
+static void move_down(void);
 static void move_left(void);
 static void move_right(void);
 
@@ -56,6 +58,12 @@ void input(void)
         case KEY_END:
             move_end();
             break;
+        case KEY_UP:
+            move_up();
+            break;
+        case KEY_DOWN:
+            move_down();
+            break;
         case KEY_LEFT:
             move_left();
             break;
@@ -86,14 +94,58 @@ static void move_end(void)
     buffer->cursX = (int)line_current->size;
 }
 
+static void move_up(void)
+{
+    if(line_current->prev != line_head)
+    {
+        line_current = line_current->prev;
+        buffer->cursY--;
+        if(buffer->cursX > (int)line_current->size)
+        {
+            buffer->cursX = line_current->size;
+        }
+    }
+}
+
+static void move_down(void)
+{
+    if(line_current->next != NULL)
+    {
+        line_current = line_current->next;
+        buffer->cursY++;
+        if(buffer->cursX > (int)line_current->size)
+        {
+            buffer->cursX = line_current->size;
+        }
+    }
+}
+
 static void move_left(void)
 {
     if(buffer->cursX > 0)
         buffer->cursX--;
+    else
+    {
+        if(line_current->prev != line_head)
+        {
+            line_current = line_current->prev;
+            buffer->cursY--;
+            buffer->cursX = line_current->size;
+        }
+    }
 }
 
 static void move_right(void)
 {
     if(buffer->cursX < (int)line_current->size)
         buffer->cursX++;
+    else
+    {
+        if(line_current->next != NULL)
+        {
+            line_current = line_current->next;
+            buffer->cursY++;
+            buffer->cursX = 0;
+        }
+    }
 }

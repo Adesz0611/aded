@@ -11,12 +11,13 @@
 #include "defs.h"
 #include "line.h"
 #include "curses.h"
-#include "print.h"
 #include "display.h"
 #include "buffer.h"
 #include "input.h"
 #include "file.h"
+#include "version.h"
 
+static void usage(void);
 static void destroy(void);
 
 int main (int argc, const char *argv[])
@@ -30,13 +31,13 @@ int main (int argc, const char *argv[])
     {
         if(!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help"))
         {
-            print_usage();
+            usage();
             return EXIT_FAILURE;
         }
         
         else if(!strcmp(argv[1], "--version"))
         {
-            print_version();
+            version();
             return EXIT_FAILURE;
         }
         else
@@ -59,6 +60,14 @@ int main (int argc, const char *argv[])
     }
     
     return 0;
+}
+
+static void usage(void)
+{
+    printf("Usage: %s [options] filename\n", PROGRAM_NAME);
+    fputs("Options:\n", stdout);
+    fputs("         --help     display help then exit\n", stdout);
+    fputs("         --version  display version informations then exit\n", stdout);
 }
 
 static void destroy(void)
