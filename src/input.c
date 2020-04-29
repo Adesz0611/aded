@@ -46,7 +46,7 @@ void input(void)
             }
             break;
         case KEY_DC:
-            if(line_current->size > 0)
+            if(line_current->size > 0 && buffer->cursX != (int)line_current->size)
             {
                 memmove(&line_current->buffer[buffer->cursX], &line_current->buffer[buffer->cursX + 1], line_current->size - buffer->cursX);
                 line_current->size--;
