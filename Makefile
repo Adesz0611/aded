@@ -3,7 +3,7 @@ PROGNAME = editor
 
 CC = gcc
 WARNINGS = -Wall -Wextra
-CFLAGS = $(WARNINGS) -lncursesw -ggdb
+CFLAGS = $(WARNINGS) -lncursesw -ggdb -O2
 
 BINDIR = /usr/local/bin
 SRCDIR = src

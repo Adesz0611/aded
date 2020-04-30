@@ -68,6 +68,12 @@ static void usage(void)
     fputs("Options:\n", stdout);
     fputs("         --help     display help then exit\n", stdout);
     fputs("         --version  display version informations then exit\n", stdout);
+
+    fputs(
+        "hello egyik sor\n"
+        "hello masik sor\n"
+        ,stdout
+    );
 }
 
 static void destroy(void)

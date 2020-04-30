@@ -3,6 +3,7 @@
 
 #include "line.h"
 #include "defs.h"
+#include "buffer.h"
 
 
 void line_init (void)
@@ -31,3 +32,15 @@ line_t *line_add(const char *text)
     return tmp;
 }
 
+/* Line delete stupid solution*/
+
+void line_delete(void)
+{
+    line_t *tmp;
+    line_current = line_current->prev;
+    buffer->cursX = line_current->size;
+    tmp = line_current->next;
+    line_current->next = tmp->next;
+    free(tmp);
+    buffer->cursY--;
+}

@@ -44,6 +44,13 @@ void input(void)
                 memmove(&line_current->buffer[buffer->cursX], &line_current->buffer[buffer->cursX + 1], line_current->size - buffer->cursX);
                 line_current->size--;
             }
+            else
+            {
+                if(line_current->prev != line_head)
+                {
+                    line_delete();
+                }
+            }
             break;
         case KEY_DC:
             if(line_current->size > 0 && buffer->cursX != (int)line_current->size)
@@ -106,6 +113,9 @@ static void move_up(void)
         }
     }
 }
+
+// #define move_left move_any(1, 0, 0, 0)
+// #define move_up move_any(0, 1, 0, 0)
 
 static void move_down(void)
 {

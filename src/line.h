@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdio.h>
+#include <stdlib.h>
 
 typedef struct line_t{
     char *buffer;
@@ -11,6 +12,7 @@ typedef struct line_t{
 
 void line_init(void);
 line_t *line_add(const char *text);
+void line_delete(void);
 
 line_t *line_head;
 line_t *line_tail;

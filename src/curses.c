@@ -17,11 +17,6 @@ void curses_init(void)
     getmaxyx(stdscr, curses->termY, curses->termX);
 }
 
-void curses_one_loop(void)
-{
-    getch();
-}
-
 void curses_clean(void)
 {
     endwin();
