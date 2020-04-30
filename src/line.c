@@ -40,7 +40,18 @@ void line_delete(void)
     line_current = line_current->prev;
     buffer->cursX = line_current->size;
     tmp = line_current->next;
-    line_current->next = tmp->next;
+    if(tmp->next != NULL)
+    {
+        line_current->next = tmp->next;
+        // Set current->next's prev :)
+        line_current->next->prev = line_current;
+    }
+    else
+    {
+        line_current->next = NULL;
+        line_tail = line_current;
+    }
+
     free(tmp);
     buffer->cursY--;
 }
