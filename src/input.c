@@ -32,8 +32,13 @@ void input(void)
             file_save();
             break;
         case ENTER:
-            line_current->buffer[buffer->cursX] = '\n';
             line_add("");
+            memmove(&line_current->buffer[0], &line_current->prev->buffer[buffer->cursX], line_current->prev->size - buffer->cursX); // '\n' is not element of size!!!
+            line_current->size = line_current->prev->size - buffer->cursX;
+            line_current->prev->size -= line_current->size;
+
+            line_current->prev->buffer[buffer->cursX] = '\n';
+
             buffer->cursY++;
             buffer->cursX = 0;
             break;

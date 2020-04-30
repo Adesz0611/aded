@@ -1,0 +1,25 @@
+##################################################################
+#                                                                #
+#   WARNING: This kinda "documentation" is in hungarian,         #
+#   because my first language is that so it's more comfortable   #
+#   for me. Thank you!                                           #
+#                                                                #
+##################################################################
+
+if statement:
+=============
+    syntax:
+        if [condition] then
+            # some code
+        end
+
+    comparsion in if statement:
+        eq      or      ==               <-- equals to
+        ne      or      !=               <-- not equals to
+        lt      or      <                <-- less than
+        gt      or      >                <-- greater than
+
+    example:
+        if [synhighl ne active] then
+            synhighl = active
+        end

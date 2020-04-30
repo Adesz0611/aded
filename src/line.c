@@ -11,6 +11,7 @@ void line_init (void)
     line_head = malloc(sizeof(*line_head));
     memset(line_head, 0, sizeof(*line_head));
     line_tail = line_head;
+    line_current = line_head;
 }
 
 line_t *line_add(const char *text)
@@ -24,9 +25,30 @@ line_t *line_add(const char *text)
     strncpy(tmp->buffer, text, MAXLINE - 1);
     tmp->size = strlen(text);
 
-    line_tail->next = tmp;
-    tmp->prev = line_tail;
-    line_tail = tmp;
+    // Hungarian: Idáig jó
+    if(line_current == line_tail)
+    {
+        line_tail->next = tmp;
+        tmp->prev = line_tail;
+        line_tail = tmp;
+    }
+
+    // If it isn't the line_tail
+    else
+    {
+        line_t *tmp_next = line_current->next;
+        line_current->next = tmp;
+        tmp->prev = line_current;
+        tmp->next = tmp_next;
+        tmp_next->prev = tmp;
+    }
+    
+    /*memmove(&tmp->buffer[0], &line_current->buffer[buffer->cursX], line_current->size - buffer->cursX); // '\n' is not element of size!!!
+    tmp->size = line_current->size - buffer->cursX;
+    line_current->size -= tmp->size;
+
+    line_current->buffer[buffer->cursX] = '\n';*/
+
     line_current = tmp;
 
     return tmp;
