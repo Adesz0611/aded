@@ -35,11 +35,13 @@ void input(void)
             line_add("");
             strncpy(&line_current->buffer[0], &line_current->prev->buffer[buffer->cursX], line_current->prev->size - buffer->cursX); // '\n' is not element of size!!!
             
-            memset(&line_current->prev->buffer[buffer->cursX], 0, line_current->prev->size - buffer->cursX);
+            // Delete all of bytes after cursor (also '\n')
+            memset(&line_current->prev->buffer[buffer->cursX], 0, line_current->prev->size + 1 - buffer->cursX);
             line_current->prev->buffer[buffer->cursX] = '\n';
 
             line_current->size = line_current->prev->size - buffer->cursX;
             line_current->prev->size -= line_current->size;
+            line_current->buffer[line_current->size] = '\n';
             
             buffer->cursY++;
             buffer->cursX = 0;
@@ -85,13 +87,9 @@ void input(void)
             move_right();
             break;
         default:
-            if(buffer->cursX == (int)line_current->size)
-                line_current->buffer[buffer->cursX] = input_wchar;
-            else
-            {
-                memmove(&line_current->buffer[buffer->cursX + 1], &line_current->buffer[buffer->cursX], line_current->size - buffer->cursX);
-                line_current->buffer[buffer->cursX] = input_wchar;
-            }
+            memmove(&line_current->buffer[buffer->cursX + 1], &line_current->buffer[buffer->cursX], line_current->size + 1 - buffer->cursX);
+            line_current->buffer[buffer->cursX] = input_wchar;
+
             line_current->size++;
             buffer->cursX++;
             break;

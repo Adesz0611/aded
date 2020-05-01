@@ -24,6 +24,7 @@ line_t *line_add(const char *text)
 
     strncpy(tmp->buffer, text, MAXLINE - 1);
     tmp->size = strlen(text);
+    tmp->buffer[0] = '\n';
 
     // Hungarian: Idáig jó
     if(line_current == line_tail)
@@ -42,13 +43,7 @@ line_t *line_add(const char *text)
         tmp->next = tmp_next;
         tmp_next->prev = tmp;
     }
-    
-    /*memmove(&tmp->buffer[0], &line_current->buffer[buffer->cursX], line_current->size - buffer->cursX); // '\n' is not element of size!!!
-    tmp->size = line_current->size - buffer->cursX;
-    line_current->size -= tmp->size;
-
-    line_current->buffer[buffer->cursX] = '\n';*/
-
+     
     line_current = tmp;
 
     return tmp;
