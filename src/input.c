@@ -33,12 +33,14 @@ void input(void)
             break;
         case ENTER:
             line_add("");
-            memmove(&line_current->buffer[0], &line_current->prev->buffer[buffer->cursX], line_current->prev->size - buffer->cursX); // '\n' is not element of size!!!
-            line_current->size = line_current->prev->size - buffer->cursX;
-            line_current->prev->size -= line_current->size;
-
+            strncpy(&line_current->buffer[0], &line_current->prev->buffer[buffer->cursX], line_current->prev->size - buffer->cursX); // '\n' is not element of size!!!
+            
+            memset(&line_current->prev->buffer[buffer->cursX], 0, line_current->prev->size - buffer->cursX);
             line_current->prev->buffer[buffer->cursX] = '\n';
 
+            line_current->size = line_current->prev->size - buffer->cursX;
+            line_current->prev->size -= line_current->size;
+            
             buffer->cursY++;
             buffer->cursX = 0;
             break;
