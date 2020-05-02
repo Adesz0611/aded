@@ -8,4 +8,6 @@
 
 #define TAB_WIDTH 4
 
+#define DISPLAY_DOLLAR_AS_NEWLINE 0
+
 #define scpy(dst, src) strncpy((dst), (src), (sizeof(dst)) - 1)

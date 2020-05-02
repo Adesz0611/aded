@@ -3,6 +3,7 @@
 #include "line.h"
 #include "curses.h"
 #include "file.h"
+#include "defs.h"
 
 void display_buffer(void)
 {
@@ -21,9 +22,11 @@ void display_buffer(void)
     {
         for(n = 0; n < curses->termX && tmp->buffer[n] != '\0'; n++)
         {
+            #if DISPLAY_DOLLAR_AS_NEWLINE
             if(tmp->buffer[n] == '\n')
                 mvprintw(i, n, "$");
             else
+            #endif
                 mvprintw(i, n, "%c", tmp->buffer[n]);
         }
     }
