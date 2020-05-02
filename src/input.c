@@ -19,6 +19,7 @@ static void move_up(void);
 static void move_down(void);
 static void move_left(void);
 static void move_right(void);
+static void tab(void);
 
 void input(void)
 {
@@ -46,11 +47,14 @@ void input(void)
             buffer->cursY++;
             buffer->cursX = 0;
             break;
+        case 127:
+        case '\b':
         case KEY_BACKSPACE:
             if(buffer->cursX != 0)
             {
+                memmove(&line_current->buffer[buffer->cursX - 1], &line_current->buffer[buffer->cursX], line_current->size + 1 - buffer->cursX);
+                line_current->buffer[line_current->size] = '\0';
                 buffer->cursX--;
-                memmove(&line_current->buffer[buffer->cursX], &line_current->buffer[buffer->cursX + 1], line_current->size - buffer->cursX);
                 line_current->size--;
             }
             else
@@ -65,8 +69,12 @@ void input(void)
             if(line_current->size > 0 && buffer->cursX != (int)line_current->size)
             {
                 memmove(&line_current->buffer[buffer->cursX], &line_current->buffer[buffer->cursX + 1], line_current->size - buffer->cursX);
+                line_current->buffer[line_current->size] = '\0';
                 line_current->size--;
             }
+            break;
+        case KEY_TAB:
+            tab();
             break;
         case KEY_HOME:
             move_home();
@@ -163,4 +171,13 @@ static void move_right(void)
             buffer->cursX = 0;
         }
     }
+}
+
+static void tab(void)
+{
+    memmove(&line_current->buffer[buffer->cursX + TAB_WIDTH], &line_current->buffer[buffer->cursX], line_current->size + 1 - buffer->cursX); // Must memmove because of '\n' character
+    for(int i = buffer->cursX; i < buffer->cursX + TAB_WIDTH; i++)
+        line_current->buffer[i] = ' ';
+    buffer->cursX += TAB_WIDTH;
+    line_current->size += TAB_WIDTH;
 }

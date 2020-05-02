@@ -21,7 +21,10 @@ void display_buffer(void)
     {
         for(n = 0; n < curses->termX && tmp->buffer[n] != '\0'; n++)
         {
-            mvprintw(i, n, "%c", tmp->buffer[n]);
+            if(tmp->buffer[n] == '\n')
+                mvprintw(i, n, "$");
+            else
+                mvprintw(i, n, "%c", tmp->buffer[n]);
         }
     }
 }

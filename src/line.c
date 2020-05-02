@@ -61,6 +61,7 @@ void line_delete(void)
     // Move the line's buffer that be deleted to the prev line's end
     memmove(&line_current->buffer[buffer->cursX], &tmp->buffer[0], tmp->size);
     line_current->size += tmp->size;
+    line_current->buffer[line_current->size] = '\n';
 
     if(tmp->next != NULL)
     {
