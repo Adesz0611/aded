@@ -14,7 +14,12 @@ void display_buffer(void)
     {
         for(i = 0; i < curses->termX; i++)
         {
-            mvprintw(n, i, " ");
+            #if TILDE_IN_BLANK_LINE
+            if(i == 0)
+                mvprintw(n, i, "~");
+            else
+            #endif
+                mvprintw(n, i, " ");
         }
     }
 

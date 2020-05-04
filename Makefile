@@ -1,5 +1,5 @@
 # Makefile for aded editor, updated 2020-04-24 22:45:53
-PROGNAME = editor
+PROGNAME = aded
 
 CC = gcc
 WARNINGS = -Wall -Wextra

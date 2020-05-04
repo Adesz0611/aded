@@ -65,15 +65,11 @@ int main (int argc, const char *argv[])
 static void usage(void)
 {
     printf("Usage: %s [options] filename\n", PROGRAM_NAME);
-    fputs("Options:\n", stdout);
-    fputs("         --help     display help then exit\n", stdout);
-    fputs("         --version  display version informations then exit\n", stdout);
-
     fputs(
-        "hello egyik sor\n"
-        "hello masik sor\n"
-        ,stdout
-    );
+    "Options:\n"
+    "         --help     display help then exit\n"
+    "         --version  display version informations then exit\n",
+    stdout);
 }
 
 static void destroy(void)
