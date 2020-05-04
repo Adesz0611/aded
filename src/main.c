@@ -66,9 +66,9 @@ static void usage(void)
 {
     printf("Usage: %s [options] filename\n", PROGRAM_NAME);
     fputs(
-    "Options:\n"
-    "         --help     display help then exit\n"
-    "         --version  display version informations then exit\n",
+        "Options:\n"
+        "         --help     display help then exit\n"
+        "         --version  display version informations then exit\n",
     stdout);
 }
 
