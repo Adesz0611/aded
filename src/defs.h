@@ -8,7 +8,7 @@
 
 #define TAB_WIDTH 4
 
-#define DISPLAY_DOLLAR_AS_NEWLINE 0
-#define TILDE_IN_BLANK_LINE 1
+#define DISPLAY_DOLLAR_AS_NEWLINE 1
+#define TILDE_IN_BLANK_LINE 0
 
 #define scpy(dst, src) strncpy((dst), (src), (sizeof(dst)) - 1)

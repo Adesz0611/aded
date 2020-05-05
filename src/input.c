@@ -34,15 +34,15 @@ void input(void)
             break;
         case ENTER:
             line_add("");
-            strncpy(&line_current->buffer[0], &line_current->prev->buffer[buffer->cursX], line_current->prev->size - buffer->cursX); // '\n' is not element of size!!!
+            strncpy(&line_current->buffer[0], &line_current->prev->buffer[buffer->cursX], line_current->prev->size - 1 - buffer->cursX); // '\n' is not element of size!!!
             
             // Delete all of bytes after cursor (also '\n')
-            memset(&line_current->prev->buffer[buffer->cursX], 0, line_current->prev->size + 1 - buffer->cursX);
+            memset(&line_current->prev->buffer[buffer->cursX], 0, line_current->prev->size - buffer->cursX);
             line_current->prev->buffer[buffer->cursX] = '\n';
 
-            line_current->size = line_current->prev->size - buffer->cursX;
-            line_current->prev->size -= line_current->size;
-            line_current->buffer[line_current->size] = '\n';
+            line_current->size += line_current->prev->size - 1 - buffer->cursX;
+            line_current->prev->size -= line_current->size - 1;
+            line_current->buffer[line_current->size - 1] = '\n';
             
             buffer->cursY++;
             buffer->cursX = 0;
@@ -69,7 +69,7 @@ void input(void)
             if(line_current->size > 0 && buffer->cursX != (int)line_current->size)
             {
                 memmove(&line_current->buffer[buffer->cursX], &line_current->buffer[buffer->cursX + 1], line_current->size - buffer->cursX);
-                line_current->buffer[line_current->size] = '\0';
+                line_current->buffer[line_current->size + 1] = '\0';
                 line_current->size--;
             }
             break;
@@ -95,7 +95,7 @@ void input(void)
             move_right();
             break;
         default:
-            memmove(&line_current->buffer[buffer->cursX + 1], &line_current->buffer[buffer->cursX], line_current->size + 1 - buffer->cursX);
+            memmove(&line_current->buffer[buffer->cursX + 1], &line_current->buffer[buffer->cursX], line_current->size - buffer->cursX);
             line_current->buffer[buffer->cursX] = input_wchar;
 
             line_current->size++;
@@ -111,7 +111,7 @@ static void move_home(void)
 
 static void move_end(void)
 {
-    buffer->cursX = (int)line_current->size;
+    buffer->cursX = (int)line_current->size - 1;
 }
 
 static void move_up(void)
@@ -120,9 +120,9 @@ static void move_up(void)
     {
         line_current = line_current->prev;
         buffer->cursY--;
-        if(buffer->cursX > (int)line_current->size)
+        if(buffer->cursX > (int)line_current->size - 1)
         {
-            buffer->cursX = line_current->size;
+            buffer->cursX = line_current->size - 1;
         }
     }
 }
@@ -136,9 +136,9 @@ static void move_down(void)
     {
         line_current = line_current->next;
         buffer->cursY++;
-        if(buffer->cursX > (int)line_current->size)
+        if(buffer->cursX > (int)line_current->size - 1)
         {
-            buffer->cursX = line_current->size;
+            buffer->cursX = line_current->size - 1;
         }
     }
 }
@@ -153,14 +153,14 @@ static void move_left(void)
         {
             line_current = line_current->prev;
             buffer->cursY--;
-            buffer->cursX = line_current->size;
+            buffer->cursX = line_current->size - 1;
         }
     }
 }
 
 static void move_right(void)
 {
-    if(buffer->cursX < (int)line_current->size)
+    if(buffer->cursX < (int)line_current->size - 1)
         buffer->cursX++;
     else
     {
@@ -175,7 +175,7 @@ static void move_right(void)
 
 static void tab(void)
 {
-    memmove(&line_current->buffer[buffer->cursX + TAB_WIDTH], &line_current->buffer[buffer->cursX], line_current->size + 1 - buffer->cursX); // Must memmove because of '\n' character
+    memmove(&line_current->buffer[buffer->cursX + TAB_WIDTH], &line_current->buffer[buffer->cursX], line_current->size - buffer->cursX); // Must memmove because of '\n' character
     for(int i = buffer->cursX; i < buffer->cursX + TAB_WIDTH; i++)
         line_current->buffer[i] = ' ';
     buffer->cursX += TAB_WIDTH;
