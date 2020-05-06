@@ -13,8 +13,10 @@
 
 static wchar_t input_wchar;
 
+#if ALLOW_HOME_AND_END_KEY
 static void move_home(void);
 static void move_end(void);
+#endif // ALLOW_HOME_AND_END_KEY
 static void move_up(void);
 static void move_down(void);
 static void move_left(void);
@@ -76,12 +78,14 @@ void input(void)
         case KEY_TAB:
             tab();
             break;
+        #if ALLOW_HOME_AND_END_KEY
         case KEY_HOME:
             move_home();
             break;
         case KEY_END:
             move_end();
             break;
+        #endif //ALLOW_HOME_AND_END_KEY
         case KEY_UP:
             move_up();
             break;
@@ -104,6 +108,7 @@ void input(void)
     }
 }
 
+#if ALLOW_HOME_AND_END_KEY
 static void move_home(void)
 {
     buffer->cursX = 0;
@@ -113,6 +118,7 @@ static void move_end(void)
 {
     buffer->cursX = (int)line_current->size - 1;
 }
+#endif // ALLOW_HOME_AND_END_KEY
 
 static void move_up(void)
 {
