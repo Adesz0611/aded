@@ -60,8 +60,8 @@ void input(void)
             else
             {
                 if(line_current->prev != line_head)
-                {
-                    line_delete();
+                { 
+                    line_delete(FROM_BACKSPACE_KEY);
                 }
             }
             break;

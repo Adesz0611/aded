@@ -5,7 +5,6 @@
 #include "defs.h"
 #include "buffer.h"
 
-
 void line_init (void)
 {
     line_head = malloc(sizeof(*line_head));
@@ -52,18 +51,21 @@ line_t *line_add(const char *text)
 
 /* Line delete stupid solution*/
 
-void line_delete(void)
+void line_delete(int flag)
 {
     line_t *tmp;
     line_current = line_current->prev;
     buffer->cursX = line_current->size - 1;
     tmp = line_current->next;
     
-    // Move the line's buffer that be deleted to the prev line's end
-    // We don't use memmove() here because the memory don't overlap
-    memcpy(&line_current->buffer[buffer->cursX], &tmp->buffer[0], tmp->size - 1); // -1 Because of '\n' character
-    line_current->size += tmp->size - 1; // +1 for '\n'
-    line_current->buffer[line_current->size - 1] = '\n';
+    if(flag == FROM_BACKSPACE_KEY)
+    {
+        // Move the line's buffer that be deleted to the prev line's end
+        // We don't use memmove() here because the memory don't overlap
+        memcpy(&line_current->buffer[buffer->cursX], &tmp->buffer[0], tmp->size - 1); // -1 Because of '\n' character
+        line_current->size += tmp->size - 1; // +1 for '\n'
+        line_current->buffer[line_current->size - 1] = '\n';
+    }
 
     if(tmp->next != NULL)
     {
