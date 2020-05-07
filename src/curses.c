@@ -9,12 +9,14 @@ void curses_init(void)
     initscr();
     cbreak();
     noecho();
-    keypad(stdscr, true);
     
     curses = (curses_t *)malloc(sizeof(*curses));
     memset(curses, 0, sizeof(*curses));
 
     getmaxyx(stdscr, curses->termY, curses->termX);
+   
+    curses->window = newwin(curses->termY, curses->termX, 0, 0);
+    keypad(curses->window, true);
 }
 
 void curses_clean(void)

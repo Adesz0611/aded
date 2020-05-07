@@ -55,7 +55,7 @@ int main (int argc, const char *argv[])
     while(1)
     {
        display_buffer();
-       move(buffer->cursY, buffer->cursX);
+       wmove(curses->window, buffer->cursY, buffer->cursX);
        input();
     }
     

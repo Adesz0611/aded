@@ -25,7 +25,7 @@ static void tab(void);
 
 void input(void)
 {
-    input_wchar = getch();
+    input_wchar = wgetch(curses->window);
     switch(input_wchar)
     {
         case KEY_F(10):

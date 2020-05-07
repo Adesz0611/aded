@@ -16,10 +16,10 @@ void display_buffer(void)
         {
             #if TILDE_IN_BLANK_LINE
             if(i == 0)
-                mvprintw(n, i, "~");
+                mvwprintw(curses->window, n, i, "~");
             else
             #endif
-                mvprintw(n, i, " ");
+                mvwprintw(curses->window, n, i, " ");
         }
     }
 
@@ -29,10 +29,10 @@ void display_buffer(void)
         {
             #if DISPLAY_DOLLAR_AS_NEWLINE
             if(tmp->buffer[n] == '\n')
-                mvprintw(i, n, "$");
+                mvwprintw(curses->window, i, n, "$");
             else
             #endif
-                mvprintw(i, n, "%c", tmp->buffer[n]);
+                mvwprintw(curses->window, i, n, "%c", tmp->buffer[n]);
         }
     }
 }
