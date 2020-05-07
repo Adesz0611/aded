@@ -67,12 +67,16 @@ void input(void)
                 }
             }
             break;
-        case KEY_DC:
+        case KEY_DC: // Delete key
             if(line_current->size > 1 && buffer->cursX != (int)line_current->size - 1)
             {
                 memmove(&line_current->buffer[buffer->cursX], &line_current->buffer[buffer->cursX + 1], line_current->size - buffer->cursX);
                 line_current->buffer[line_current->size + 1] = '\0';
                 line_current->size--;
+            }
+            else if(line_current->next != NULL)
+            {
+                line_delete(BY_DELETE);
             }
             break;
         case KEY_TAB:

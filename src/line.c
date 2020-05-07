@@ -54,11 +54,22 @@ line_t *line_add(const char *text)
 void line_delete(enum line_delete_flag flag)
 {
     line_t *tmp;
-    line_current = line_current->prev;
-    buffer->cursX = line_current->size - 1;
-    tmp = line_current->next;
-    
-    if(flag == BY_BACKSPACE)
+
+    if(flag != BY_DELETE)
+    {
+        line_current = line_current->prev;
+        buffer->cursX = line_current->size - 1;
+        tmp = line_current->next;
+    }
+    else
+    {
+        if(line_current != line_tail)
+            tmp = line_current->next;
+        else
+            return;
+    }
+   
+    if(flag == BY_BACKSPACE || flag == BY_DELETE)
     {
         // Move the line's buffer that be deleted to the prev line's end
         // We don't use memmove() here because the memory don't overlap
@@ -80,5 +91,7 @@ void line_delete(enum line_delete_flag flag)
     }
 
     free(tmp);
-    buffer->cursY--;
+
+    if(flag != BY_DELETE)
+        buffer->cursY--;
 }

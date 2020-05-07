@@ -5,7 +5,8 @@
 
 enum line_delete_flag {
     BY_DEFAULT = 0,
-    BY_BACKSPACE
+    BY_BACKSPACE,
+    BY_DELETE
 };
 
 typedef struct line_t{
