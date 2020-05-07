@@ -63,7 +63,7 @@ void input(void)
             {
                 if(line_current->prev != line_head)
                 { 
-                    line_delete(FROM_BACKSPACE_KEY);
+                    line_delete(BY_BACKSPACE);
                 }
             }
             break;

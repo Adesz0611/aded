@@ -3,8 +3,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define FROM_BACKSPACE_KEY 1
-#define FROM_DEFAULT 0
+enum line_delete_flag {
+    BY_DEFAULT = 0,
+    BY_BACKSPACE
+};
 
 typedef struct line_t{
     char *buffer;
@@ -15,7 +17,7 @@ typedef struct line_t{
 
 void line_init(void);
 line_t *line_add(const char *text);
-void line_delete(int flag);
+void line_delete(enum line_delete_flag flag);
 
 line_t *line_head;
 line_t *line_tail;
