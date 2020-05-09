@@ -7,6 +7,10 @@
 #include <string.h>
 #include <errno.h>
 
+#if __unix__
+#include <signal.h>
+#endif
+
 #include "types.h"
 #include "defs.h"
 #include "line.h"
@@ -23,6 +27,12 @@ static void destroy(void);
 int main (int argc, const char *argv[])
 {
     atexit(destroy);
+
+#if __unix__
+#ifdef SIGWINCH
+    signal(SIGWINCH, curses_resize);
+#endif
+#endif
 
     // init
     file_init();
@@ -50,7 +60,7 @@ int main (int argc, const char *argv[])
     line_init();
 
     line_add(""); // First line
-
+    line_yOffset = line_head->next;
 
     while(1)
     {

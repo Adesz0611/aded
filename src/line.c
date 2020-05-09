@@ -89,9 +89,13 @@ void line_delete(enum line_delete_flag flag)
         line_current->next = NULL;
         line_tail = line_current;
     }
-
     free(tmp);
 
     if(flag != BY_DELETE)
-        buffer->cursY--;
+    {   
+        if(buffer->cursY < 1)
+            line_yOffset = line_yOffset->prev;
+        else
+           buffer->cursY--;
+    }
 }

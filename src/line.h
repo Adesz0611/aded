@@ -23,3 +23,4 @@ void line_delete(enum line_delete_flag flag);
 line_t *line_head;
 line_t *line_tail;
 line_t *line_current;
+line_t *line_yOffset;

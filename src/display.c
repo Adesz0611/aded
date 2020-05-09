@@ -23,13 +23,13 @@ void display_buffer(void)
         }
     }
 
-    for(i = 0, tmp = line_head->next; i < curses->termY && tmp != NULL; i++, tmp = tmp->next)
+    for(i = 0, tmp = line_yOffset; i < curses->termY && tmp != NULL; i++, tmp = tmp->next)
     {
         for(n = 0; n < curses->termX && tmp->buffer[n] != '\0'; n++)
         {
             #if DISPLAY_DOLLAR_AS_NEWLINE
             if(tmp->buffer[n] == '\n')
-                mvwprintw(curses->window, i, n, "$");
+                mvwprintw(curses->window, i, n, /*"¶"*/"$");
             else
             #endif
                 mvwprintw(curses->window, i, n, "%c", tmp->buffer[n]);

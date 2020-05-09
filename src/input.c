@@ -46,7 +46,10 @@ void input(void)
             line_current->prev->size -= line_current->size - 1;
             line_current->buffer[line_current->size - 1] = '\n';
             
-            buffer->cursY++;
+            if(buffer->cursY > curses->termY - 2)
+                line_yOffset = line_yOffset->next;
+            else
+                buffer->cursY++;
             buffer->cursX = 0;
             break;
         case 127:
@@ -82,14 +85,14 @@ void input(void)
         case KEY_TAB:
             tab();
             break;
-        #if ALLOW_HOME_AND_END_KEY
+#if ALLOW_HOME_AND_END_KEY
         case KEY_HOME:
             move_home();
             break;
         case KEY_END:
             move_end();
             break;
-        #endif //ALLOW_HOME_AND_END_KEY
+#endif //ALLOW_HOME_AND_END_KEY
         case KEY_UP:
             move_up();
             break;
@@ -128,8 +131,11 @@ static void move_up(void)
 {
     if(line_current->prev != line_head)
     {
+        if(buffer->cursY < 1)
+            line_yOffset = line_yOffset->prev;
+        else
+            buffer->cursY--;
         line_current = line_current->prev;
-        buffer->cursY--;
         if(buffer->cursX > (int)line_current->size - 1)
         {
             buffer->cursX = line_current->size - 1;
@@ -144,8 +150,11 @@ static void move_down(void)
 {
     if(line_current->next != NULL)
     {
+        if(buffer->cursY > curses->termY - 2)
+            line_yOffset = line_yOffset->next;
+        else
+            buffer->cursY++;
         line_current = line_current->next;
-        buffer->cursY++;
         if(buffer->cursX > (int)line_current->size - 1)
         {
             buffer->cursX = line_current->size - 1;

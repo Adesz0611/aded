@@ -19,6 +19,15 @@ void curses_init(void)
     keypad(curses->window, true);
 }
 
+#if __unix__
+#ifdef SIGWINCH
+void curses_resize()
+{
+    
+}
+#endif
+#endif
+
 void curses_clean(void)
 {
     endwin();
