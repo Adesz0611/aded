@@ -7,10 +7,6 @@
 #include <string.h>
 #include <errno.h>
 
-#if __unix__
-#include <signal.h>
-#endif
-
 #include "types.h"
 #include "defs.h"
 #include "line.h"
@@ -21,6 +17,11 @@
 #include "file.h"
 #include "version.h"
 
+#if __unix__
+#include <signal.h>
+static void emergencyexit();
+#endif
+
 static void usage(void);
 static void destroy(void);
 
@@ -29,6 +30,8 @@ int main (int argc, const char *argv[])
     atexit(destroy);
 
 #if __unix__
+    signal(SIGHUP, emergencyexit);
+    signal(SIGTERM, emergencyexit);
 #ifdef SIGWINCH
     signal(SIGWINCH, curses_resize);
 #endif
@@ -71,6 +74,15 @@ int main (int argc, const char *argv[])
     
     return 0;
 }
+
+#if __unix__
+static void emergencyexit()
+{
+    // Doesn't ask that you whould like to quit
+    // just exit without saving
+    exit(EXIT_FAILURE);
+}
+#endif
 
 static void usage(void)
 {

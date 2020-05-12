@@ -1,8 +1,12 @@
+/*
+ *  (C) 2020 Adam Hunyadvari
+ *      <adesz@jss.hu>
+ */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <errno.h>
+#include <ctype.h>
 
 #include "curses.h"
 #include "input.h"
@@ -106,11 +110,14 @@ void input(void)
             move_right();
             break;
         default:
-            memmove(&line_current->buffer[buffer->cursX + 1], &line_current->buffer[buffer->cursX], line_current->size - buffer->cursX);
-            line_current->buffer[buffer->cursX] = input_wchar;
-
-            line_current->size++;
-            buffer->cursX++;
+            if(isascii(input_wchar))
+            {
+                memmove(&line_current->buffer[buffer->cursX + 1], &line_current->buffer[buffer->cursX], line_current->size - buffer->cursX);
+                line_current->buffer[buffer->cursX] = input_wchar;
+    
+                line_current->size++;
+                buffer->cursX++;
+            }
             break;
     }
 }

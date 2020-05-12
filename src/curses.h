@@ -1,7 +1,10 @@
 #pragma once
 
 #include <ncurses.h>
+
+#if __unix__
 #include <signal.h>
+#endif
 
 typedef struct {
     WINDOW *window;
