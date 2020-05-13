@@ -1,4 +1,4 @@
-#ADED
-##Adesz's Editor
+# ADED
+## Adesz's Editor
 
 Aded is a lightweight, terminal-based text editor.
