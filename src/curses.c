@@ -23,7 +23,8 @@ void curses_init(void)
 #ifdef SIGWINCH
 void curses_resize()
 {
-    
+    getmaxyx(stdscr, curses->termY, curses->termX);
+    wresize(curses->window, curses->termY, curses->termX); 
 }
 #endif
 #endif

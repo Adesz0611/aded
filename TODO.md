@@ -1,5 +1,6 @@
 TODO:
 =====
+- SIGWINCH bugfix
 - xOffset implement
 - sysntax highlight "care about"
 - Implement file load (file.c)
