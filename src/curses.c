@@ -5,6 +5,7 @@
 #include "line.h"
 #include "buffer.h"
 #include "debug.h"
+#include "defs.h"
 
 void curses_init(void)
 {
@@ -21,7 +22,9 @@ void curses_init(void)
     curses->window = newwin(curses->termY, curses->termX, 0, 0);
     keypad(curses->window, true);
 
+    #if ALLOW_DEBUG
     debugf("Started\n");
+    #endif /* ALLOW DEBUG */
 }
 
 void curses_resize()
@@ -29,8 +32,10 @@ void curses_resize()
     getmaxyx(stdscr, curses->termY, curses->termX);
     wresize(curses->window, curses->termY, curses->termX);
 
+    #if ALLOW_DEBUG
     debugf("curses->termY = %d\n", curses->termY);
     debugf("curses->termX = %d\n\n", curses->termX);
+    #endif /* ALLOW_DEBUG */
 
     // FIXME: 
     if(line_yOffset->next != NULL && buffer->cursY + 1 > curses->termY)
