@@ -32,9 +32,6 @@ int main (int argc, const char *argv[])
 #if __unix__
     signal(SIGHUP, emergencyexit);
     signal(SIGTERM, emergencyexit);
-#ifdef SIGWINCH
-    signal(SIGWINCH, curses_resize);
-#endif
 #endif
 
     // init

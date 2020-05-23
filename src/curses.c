@@ -2,6 +2,9 @@
 #include <string.h>
 
 #include "curses.h"
+#include "line.h"
+#include "buffer.h"
+#include "debug.h"
 
 void curses_init(void)
 {
@@ -17,17 +20,25 @@ void curses_init(void)
    
     curses->window = newwin(curses->termY, curses->termX, 0, 0);
     keypad(curses->window, true);
+
+    debugf("Started\n");
 }
 
-#if __unix__
-#ifdef SIGWINCH
 void curses_resize()
 {
     getmaxyx(stdscr, curses->termY, curses->termX);
-    wresize(curses->window, curses->termY, curses->termX); 
+    wresize(curses->window, curses->termY, curses->termX);
+
+    debugf("curses->termY = %d\n", curses->termY);
+    debugf("curses->termX = %d\n\n", curses->termX);
+
+    // FIXME: 
+    if(line_yOffset->next != NULL && buffer->cursY + 1 > curses->termY)
+    {
+        line_yOffset = line_yOffset->next;
+        buffer->cursY--;
+    }
 }
-#endif
-#endif
 
 void curses_clean(void)
 {

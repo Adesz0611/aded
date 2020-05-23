@@ -32,6 +32,10 @@ void input(void)
     input_wchar = wgetch(curses->window);
     switch(input_wchar)
     {
+        // Ncurses' resize handler is better than SIGWINCH
+        case KEY_RESIZE:
+            curses_resize();
+            break;
         case KEY_F(10):
             exit(EXIT_SUCCESS);
             break;
