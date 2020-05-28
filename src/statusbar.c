@@ -13,4 +13,6 @@ void statusbar_init(enum statusbar_position_enum stbar_pos)
     memset(statusbar, 0, sizeof(*statusbar));
 
     statusbar->position = stbar_pos;
+
+    statusbar->window = newwin(1, curses->termX, curses->termY - 1, 0);
 }

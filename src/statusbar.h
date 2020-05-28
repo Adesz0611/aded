@@ -13,13 +13,15 @@
  */
 #pragma once
 
+#include "curses.h"
+
 enum statusbar_position_enum {
     STBAR_POS_BOTTOM = 0,
     STBAR_POS_TOP
 };
 
 typedef struct _Statusbar {
-    // Position
+    WINDOW *window;
     enum statusbar_position_enum position;
 } Statusbar;
 
