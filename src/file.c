@@ -25,7 +25,7 @@ void file_save(void)
     {
         fprintf(stderr, "Error while saving %s: %s\n", file->filename, strerror(errno));
         sleep(3);
-        exit(-1);
+        exit(EXIT_FAILURE);
         return;
     }
 

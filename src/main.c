@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <unistd.h>
 
 #include "types.h"
 #include "defs.h"
@@ -16,6 +17,7 @@
 #include "input.h"
 #include "file.h"
 #include "version.h"
+#include "statusbar.h"
 
 #if __unix__
 #include <signal.h>
@@ -58,10 +60,12 @@ int main (int argc, const char *argv[])
     curses_init();
     buffer_init();
     line_init();
+    statusbar_init(STBAR_POS_BOTTOM);
 
     line_add(""); // First line
     line_yOffset = line_head->next;
 
+    
     while(1)
     {
        display_buffer();
