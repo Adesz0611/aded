@@ -14,28 +14,51 @@ void curses_init(void)
     cbreak();
     noecho();
     
-    curses = (curses_t *)malloc(sizeof(*curses));
-    memset(curses, 0, sizeof(*curses));
+    // Allocate memory for the terminal info struct
+    termInfo = (TerminalInfo *)malloc(sizeof(*termInfo));
+    memset(termInfo, 0, sizeof(*termInfo));
 
-    getmaxyx(stdscr, curses->termY, curses->termX);
-   
-    curses->window = newwin(curses->termY, curses->termX, 0, 0);
-    keypad(curses->window, true);
+    // Get the terminal size
+    getmaxyx(stdscr, termInfo->height, termInfo->width);
+    
+    // Create the main window
+    main_window = curses_windowAdd(termInfo->height - 1, termInfo->width, 0, 0);
 
+    // Start debugging
     DEBUGF("Started\n");
+}
+
+ADED_WINDOW *curses_windowAdd(int height, int width, int startY, int startX)
+{
+    ADED_WINDOW *tmp;
+
+    tmp = (ADED_WINDOW *)malloc(sizeof(*tmp));
+    memset(tmp, 0, sizeof(*tmp));
+
+    tmp->window = newwin(height, width, startY, startX);
+    tmp->height = height;
+    tmp->width = width;
+
+    keypad(tmp->window, true);
+
+    return tmp;
 }
 
 void curses_resize()
 {
-    getmaxyx(stdscr, curses->termY, curses->termX);
-    wresize(curses->window, curses->termY, curses->termX);
+    getmaxyx(stdscr, termInfo->height, termInfo->width);
+    
+    wresize(main_window->window, termInfo->height - 1, termInfo->width);
+    main_window->height = termInfo->height - 1;
+    main_window->width = termInfo->width;
 
 
-    DEBUGF("curses->termY = %d\n", curses->termY);
-    DEBUGF("curses->termX = %d\n\n", curses->termX);
+
+    DEBUGF("termInfo->height (y) = %d\n", termInfo->height);
+    DEBUGF("termInfo->width (x) = %d\n\n", termInfo->width);
 
     // FIXME: 
-    if(line_yOffset->next != NULL && buffer->cursY + 1 > curses->termY)
+    if(line_yOffset->next != NULL && buffer->cursY + 1 > main_window->height)
     {
         line_yOffset = line_yOffset->next;
         buffer->cursY--;

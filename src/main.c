@@ -59,7 +59,7 @@ int main (int argc, const char *argv[])
     curses_init();
     buffer_init();
     line_init();
-    statusbar_init(STBAR_POS_BOTTOM);
+    //statusbar_init(STBAR_POS_BOTTOM);
 
     line_add(""); // First line
     line_yOffset = line_head->next;
@@ -68,7 +68,7 @@ int main (int argc, const char *argv[])
     while(1)
     {
        display_buffer();
-       wmove(curses->window, buffer->cursY, buffer->cursX);
+       wmove(main_window->window, buffer->cursY, buffer->cursX);
        input();
     }
     

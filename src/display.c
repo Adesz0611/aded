@@ -10,29 +10,29 @@ void display_buffer(void)
     int i, n;
     line_t *tmp;
 
-    for(n = 0; n < curses->termY; n++)
+    for(n = 0; n < main_window->height; n++)
     {
-        for(i = 0; i < curses->termX; i++)
+        for(i = 0; i < main_window->width; i++)
         {
             #if TILDE_IN_BLANK_LINE
             if(i == 0)
-                mvwprintw(curses->window, n, i, "~");
+                mvwprintw(main_window->window, n, i, "~");
             else
             #endif
-                mvwprintw(curses->window, n, i, " ");
+                mvwprintw(main_window->window, n, i, " ");
         }
     }
 
-    for(i = 0, tmp = line_yOffset; i < curses->termY && tmp != NULL; i++, tmp = tmp->next)
+    for(i = 0, tmp = line_yOffset; i < main_window->height && tmp != NULL; i++, tmp = tmp->next)
     {
-        for(n = 0; n < curses->termX && tmp->buffer[n] != '\0'; n++)
+        for(n = 0; n < main_window->width && tmp->buffer[n] != '\0'; n++)
         {
             #if DISPLAY_DOLLAR_AS_NEWLINE
             if(tmp->buffer[n] == '\n')
-                mvwprintw(curses->window, i, n, /*"¶"*/"$");
+                mvwprintw(main_window->window, i, n, /*"¶"*/"$");
             else
             #endif
-                mvwprintw(curses->window, i, n, "%c", tmp->buffer[n]);
+                mvwprintw(main_window->window, i, n, "%c", tmp->buffer[n]);
         }
     }
 }

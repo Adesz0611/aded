@@ -29,7 +29,7 @@ static void tab(void);
 
 void input(void)
 {
-    input_wchar = wgetch(curses->window);
+    input_wchar = wgetch(main_window->window);
     switch(input_wchar)
     {
         // Ncurses' resize handler is better than SIGWINCH
@@ -54,7 +54,7 @@ void input(void)
             line_current->prev->size -= line_current->size - 1;
             line_current->buffer[line_current->size - 1] = '\n';
             
-            if(buffer->cursY > curses->termY - 2)
+            if(buffer->cursY > main_window->height - 2)
                 line_yOffset = line_yOffset->next;
             else
                 buffer->cursY++;
@@ -161,7 +161,7 @@ static void move_down(void)
 {
     if(line_current->next != NULL)
     {
-        if(buffer->cursY > curses->termY - 2)
+        if(buffer->cursY > main_window->height - 2)
             line_yOffset = line_yOffset->next;
         else
             buffer->cursY++;
