@@ -6,6 +6,7 @@
 #include "buffer.h"
 #include "debug.h"
 #include "defs.h"
+#include "statusbar.h"
 
 void curses_init(void)
 {
@@ -46,13 +47,17 @@ ADED_WINDOW *curses_windowAdd(int height, int width, int startY, int startX)
 
 void curses_resize()
 {
+    endwin();
+    refresh();
     getmaxyx(stdscr, termInfo->height, termInfo->width);
     
     wresize(main_window->window, termInfo->height - 1, termInfo->width);
     main_window->height = termInfo->height - 1;
     main_window->width = termInfo->width;
 
-
+    wresize(statusbar->window->window, 1, termInfo->width);
+    statusbar->window->width = termInfo->width;
+    mvwin(statusbar->window->window, termInfo->height - 1, 0);
 
     DEBUGF("termInfo->height (y) = %d\n", termInfo->height);
     DEBUGF("termInfo->width (x) = %d\n\n", termInfo->width);

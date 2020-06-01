@@ -59,17 +59,19 @@ int main (int argc, const char *argv[])
     curses_init();
     buffer_init();
     line_init();
-    //statusbar_init(STBAR_POS_BOTTOM);
+    statusbar_init(STBAR_POS_BOTTOM);
 
     line_add(""); // First line
     line_yOffset = line_head->next;
 
+    statusbar_display();
     
     while(1)
     {
-       display_buffer();
-       wmove(main_window->window, buffer->cursY, buffer->cursX);
-       input();
+        display_buffer();
+        statusbar_display();
+        wmove(main_window->window, buffer->cursY, buffer->cursX);
+        input();
     }
     
     return 0;

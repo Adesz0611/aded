@@ -21,10 +21,11 @@ enum statusbar_position_enum {
 };
 
 typedef struct _Statusbar {
-    WINDOW *window;
+    ADED_WINDOW *window;
     enum statusbar_position_enum position;
 } Statusbar;
 
 Statusbar *statusbar;
 
 void statusbar_init(enum statusbar_position_enum stbar_pos);
+void statusbar_display(void);
