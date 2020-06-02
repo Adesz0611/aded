@@ -54,6 +54,7 @@ int main (int argc, const char *argv[])
         else
         {
             scpy(file->filename, argv[1]);
+            file->name_length = strlen(file->filename);
         }
     }
     curses_init();

@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "statusbar.h"
+#include "file.h"
 
 void statusbar_init(enum statusbar_position_enum stbar_pos)
 {
@@ -22,7 +23,9 @@ void statusbar_display(void)
     int i;
 
     wattron(statusbar->window->window, A_REVERSE);
-    for(i = 0; i < statusbar->window->width; i++)
+    mvwprintw(statusbar->window->window, 0, 0, " %s", file->filename);
+
+    for(i = file->name_length + 1; i < statusbar->window->width; i++)
         mvwprintw(statusbar->window->window, 0, i, " ");
     wattroff(statusbar->window->window, A_REVERSE);
     

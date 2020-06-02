@@ -4,7 +4,8 @@
 
 
 typedef struct {
-    char filename[MAX_FILENAME]; 
+    char filename[MAX_FILENAME];
+    unsigned name_length;
 } file_t;
 
 file_t *file;
