@@ -59,8 +59,8 @@ int main (int argc, const char *argv[])
         }
     }
     curses_init();
-    buffer_init();
     cursor_init();
+    buffer_init();
     line_init();
     statusbar_init(STBAR_POS_BOTTOM);
 
@@ -73,7 +73,7 @@ int main (int argc, const char *argv[])
     {
         display_buffer();
         statusbar_display();
-        wmove(main_window->window, buffer->cursY, buffer->cursX);
+        wmove(main_window->window, cursor->cursY, cursor->cursX);
         input();
     }
     

@@ -4,6 +4,7 @@
 #include "line.h"
 #include "defs.h"
 #include "buffer.h"
+#include "cursor.h"
 
 void line_init (void)
 {
@@ -26,7 +27,7 @@ line_t *line_add(const char *text)
 
     tmp->buffer[0] = '\n';
 
-    // Hungarian: Idáig jó
+
     if(line_current == line_tail)
     {
         line_tail->next = tmp;
@@ -58,7 +59,7 @@ void line_delete(enum line_delete_flag flag)
     if(flag != BY_DELETE)
     {
         line_current = line_current->prev;
-        buffer->cursX = line_current->size - 1;
+        cursor->cursX = line_current->size - 1;
         tmp = line_current->next;
     }
     else
@@ -73,7 +74,7 @@ void line_delete(enum line_delete_flag flag)
     {
         // Move the line's buffer that be deleted to the prev line's end
         // We don't use memmove() here because the memory don't overlap
-        memcpy(&line_current->buffer[buffer->cursX], &tmp->buffer[0], tmp->size - 1); // -1 Because of '\n' character
+        memcpy(&line_current->buffer[cursor->cursX], &tmp->buffer[0], tmp->size - 1); // -1 Because of '\n' character
         line_current->size += tmp->size - 1; // +1 for '\n'
         line_current->buffer[line_current->size - 1] = '\n';
     }
@@ -93,9 +94,9 @@ void line_delete(enum line_delete_flag flag)
 
     if(flag != BY_DELETE)
     {   
-        if(buffer->cursY < 1)
+        if(cursor->cursY < 1)
             line_yOffset = line_yOffset->prev;
         else
-           buffer->cursY--;
+           cursor->cursY--;
     }
 }

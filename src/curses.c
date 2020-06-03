@@ -7,6 +7,7 @@
 #include "debug.h"
 #include "defs.h"
 #include "statusbar.h"
+#include "cursor.h"
 
 void curses_init(void)
 {
@@ -63,10 +64,10 @@ void curses_resize()
     DEBUGF("termInfo->width (x) = %d\n\n", termInfo->width);
 
     // FIXME: 
-    if(line_yOffset->next != NULL && buffer->cursY + 1 > main_window->height)
+    if(line_yOffset->next != NULL && cursor->cursY + 1 > main_window->height)
     {
         line_yOffset = line_yOffset->next;
-        buffer->cursY--;
+        cursor->cursY--;
     }
 }
 
