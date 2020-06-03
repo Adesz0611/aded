@@ -18,6 +18,7 @@ OBJ+=$(SRCDIR)/input.o
 OBJ+=$(SRCDIR)/file.o
 OBJ+=$(SRCDIR)/debug.o
 OBJ+=$(SRCDIR)/statusbar.o
+OBJ+=$(SRCDIR)/cursor.o
 
 all: $(PROGNAME)
 

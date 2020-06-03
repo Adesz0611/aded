@@ -17,6 +17,7 @@
 #include "file.h"
 #include "version.h"
 #include "statusbar.h"
+#include "cursor.h"
 
 #if __unix__
 #include <signal.h>
@@ -59,6 +60,7 @@ int main (int argc, const char *argv[])
     }
     curses_init();
     buffer_init();
+    cursor_init();
     line_init();
     statusbar_init(STBAR_POS_BOTTOM);
 
