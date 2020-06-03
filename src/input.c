@@ -59,6 +59,7 @@ void input(void)
                 line_yOffset = line_yOffset->next;
             else
                 cursor->cursY++;
+            buffer->cursY++;
             cursor->cursX = 0;
             break;
         case 127:
@@ -147,6 +148,7 @@ static void move_up(void)
             line_yOffset = line_yOffset->prev;
         else
             cursor->cursY--;
+        buffer->cursY--;
         line_current = line_current->prev;
         if(cursor->cursX > (int)line_current->size - 1)
         {
@@ -166,6 +168,7 @@ static void move_down(void)
             line_yOffset = line_yOffset->next;
         else
             cursor->cursY++;
+        buffer->cursY++;
         line_current = line_current->next;
         if(cursor->cursX > (int)line_current->size - 1)
         {
@@ -184,6 +187,7 @@ static void move_left(void)
         {
             line_current = line_current->prev;
             cursor->cursY--;
+            buffer->cursY--;
             cursor->cursX = line_current->size - 1;
         }
     }
@@ -199,6 +203,7 @@ static void move_right(void)
         {
             line_current = line_current->next;
             cursor->cursY++;
+            buffer->cursY++;
             cursor->cursX = 0;
         }
     }

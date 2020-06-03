@@ -98,5 +98,6 @@ void line_delete(enum line_delete_flag flag)
             line_yOffset = line_yOffset->prev;
         else
            cursor->cursY--;
+        buffer->cursY--;
     }
 }
