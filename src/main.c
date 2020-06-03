@@ -65,7 +65,7 @@ int main (int argc, const char *argv[])
     statusbar_init(STBAR_POS_BOTTOM);
 
     line_add(""); // First line
-    line_yOffset = line_head->next;
+    offset->line_yOffset = line_head->next;
 
     statusbar_display();
     

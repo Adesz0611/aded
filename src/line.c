@@ -8,8 +8,12 @@
 
 void line_init (void)
 {
-    line_head = malloc(sizeof(*line_head));
+    line_head = (line_t *)malloc(sizeof(*line_head));
     memset(line_head, 0, sizeof(*line_head));
+
+    offset = (Offset *)malloc(sizeof(*offset));
+    memset(offset, 0, sizeof(*offset));
+
     line_tail = line_head;
     line_current = line_head;
 }
@@ -95,7 +99,7 @@ void line_delete(enum line_delete_flag flag)
     if(flag != BY_DELETE)
     {   
         if(cursor->cursY < 1)
-            line_yOffset = line_yOffset->prev;
+            offset->line_yOffset = offset->line_yOffset->prev;
         else
            cursor->cursY--;
         buffer->cursY--;

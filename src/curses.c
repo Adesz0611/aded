@@ -64,9 +64,9 @@ void curses_resize()
     DEBUGF("termInfo->width (x) = %d\n\n", termInfo->width);
 
     // FIXME: 
-    if(line_yOffset->next != NULL && cursor->cursY + 1 > main_window->height)
+    if(offset->line_yOffset->next != NULL && cursor->cursY + 1 > main_window->height)
     {
-        line_yOffset = line_yOffset->next;
+        offset->line_yOffset = offset->line_yOffset->next;
         cursor->cursY--;
     }
 }

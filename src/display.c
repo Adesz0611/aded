@@ -23,7 +23,7 @@ void display_buffer(void)
         }
     }
 
-    for(i = 0, tmp = line_yOffset; i < main_window->height && tmp != NULL; i++, tmp = tmp->next)
+    for(i = 0, tmp = offset->line_yOffset; i < main_window->height && tmp != NULL; i++, tmp = tmp->next)
     {
         for(n = 0; n < main_window->width && tmp->buffer[n] != '\0'; n++)
         {

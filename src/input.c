@@ -56,7 +56,7 @@ void input(void)
             line_current->buffer[line_current->size - 1] = '\n';
             
             if(cursor->cursY > main_window->height - 2)
-                line_yOffset = line_yOffset->next;
+                offset->line_yOffset = offset->line_yOffset->next;
             else
                 cursor->cursY++;
             buffer->cursY++;
@@ -145,7 +145,7 @@ static void move_up(void)
     if(line_current->prev != line_head)
     {
         if(cursor->cursY < 1)
-            line_yOffset = line_yOffset->prev;
+            offset->line_yOffset = offset->line_yOffset->prev;
         else
             cursor->cursY--;
         buffer->cursY--;
@@ -165,7 +165,7 @@ static void move_down(void)
     if(line_current->next != NULL)
     {
         if(cursor->cursY > main_window->height - 2)
-            line_yOffset = line_yOffset->next;
+            offset->line_yOffset = offset->line_yOffset->next;
         else
             cursor->cursY++;
         buffer->cursY++;
