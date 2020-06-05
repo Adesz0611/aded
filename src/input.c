@@ -67,8 +67,9 @@ void input(void)
             break;
         case 127:
         case '\b':
+
+        // FIXME:
         case KEY_BACKSPACE:
-            // FIXME:
             if(buffer->cursX > 0)
             {
                 memmove(&line_current->buffer[buffer->cursX - 1], &line_current->buffer[buffer->cursX], line_current->size + 1 - buffer->cursX);
@@ -92,6 +93,8 @@ void input(void)
                 }
             }
             break;
+
+        // FIXME:
         case KEY_DC: // Delete key
             if(buffer->cursX < (int)line_current->size - 1)
             {
@@ -127,16 +130,19 @@ void input(void)
         case KEY_RIGHT:
             move_right();
             break;
+        // FIXME:
         default:
             if(isascii(input_wchar))
             {
                 memmove(&line_current->buffer[buffer->cursX + 1], &line_current->buffer[buffer->cursX], line_current->size - buffer->cursX);
                 line_current->buffer[buffer->cursX] = input_wchar;
 
-                if(cursor->cursX > termInfo->width - 2)
+                // ----------------------------------------------- //
+
+                if(cursor->cursX > main_window->width - 2)
                 {
                     offset->xOffset += XSCROLL_VALUE;
-                    cursor->cursX += XSCROLL_VALUE;
+                    cursor->cursX -= XSCROLL_VALUE;
                 }
                 else
                     cursor->cursX++;
