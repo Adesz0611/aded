@@ -32,7 +32,7 @@ void display_buffer(void)
                 mvwprintw(main_window->window, i, n, /*"¶"*/"$");
             else
             #endif
-                mvwprintw(main_window->window, i, n, "%c", tmp->buffer[n]);
+                mvwprintw(main_window->window, i, n, "%c", tmp->buffer[n + offset->xOffset]);
         }
     }
 }

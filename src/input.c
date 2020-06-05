@@ -45,13 +45,13 @@ void input(void)
             break;
         case ENTER:
             line_add("");
-            strncpy(&line_current->buffer[0], &line_current->prev->buffer[cursor->cursX], line_current->prev->size - 1 - cursor->cursX); // '\n' is not element of size!!!
+            strncpy(&line_current->buffer[0], &line_current->prev->buffer[buffer->cursX], line_current->prev->size - 1 - buffer->cursX); // '\n' is not element of size!!!
             
             // Delete all of bytes after cursor (also '\n')
-            memset(&line_current->prev->buffer[cursor->cursX], 0, line_current->prev->size - cursor->cursX);
-            line_current->prev->buffer[cursor->cursX] = '\n';
+            memset(&line_current->prev->buffer[buffer->cursX], 0, line_current->prev->size - buffer->cursX);
+            line_current->prev->buffer[buffer->cursX] = '\n';
 
-            line_current->size += line_current->prev->size - 1 - cursor->cursX;
+            line_current->size += line_current->prev->size - 1 - buffer->cursX;
             line_current->prev->size -= line_current->size - 1;
             line_current->buffer[line_current->size - 1] = '\n';
             
@@ -60,16 +60,28 @@ void input(void)
             else
                 cursor->cursY++;
             buffer->cursY++;
+
             cursor->cursX = 0;
+            buffer->cursX = 0;
+            offset->xOffset = 0;
             break;
         case 127:
         case '\b':
         case KEY_BACKSPACE:
-            if(cursor->cursX != 0)
+            // FIXME:
+            if(buffer->cursX > 0)
             {
-                memmove(&line_current->buffer[cursor->cursX - 1], &line_current->buffer[cursor->cursX], line_current->size + 1 - cursor->cursX);
+                memmove(&line_current->buffer[buffer->cursX - 1], &line_current->buffer[buffer->cursX], line_current->size + 1 - buffer->cursX);
                 line_current->buffer[line_current->size] = '\0';
+
+                if(cursor->cursX < 1)
+                {
+                    offset->xOffset -= XSCROLL_VALUE;
+                    cursor->cursX += XSCROLL_VALUE;
+                }
+
                 cursor->cursX--;
+                buffer->cursX--;
                 line_current->size--;
             }
             else
@@ -81,9 +93,9 @@ void input(void)
             }
             break;
         case KEY_DC: // Delete key
-            if(line_current->size > 1 && cursor->cursX != (int)line_current->size - 1)
+            if(buffer->cursX < (int)line_current->size - 1)
             {
-                memmove(&line_current->buffer[cursor->cursX], &line_current->buffer[cursor->cursX + 1], line_current->size - cursor->cursX);
+                memmove(&line_current->buffer[buffer->cursX], &line_current->buffer[buffer->cursX + 1], line_current->size - buffer->cursX);
                 line_current->buffer[line_current->size + 1] = '\0';
                 line_current->size--;
             }
@@ -118,11 +130,18 @@ void input(void)
         default:
             if(isascii(input_wchar))
             {
-                memmove(&line_current->buffer[cursor->cursX + 1], &line_current->buffer[cursor->cursX], line_current->size - cursor->cursX);
-                line_current->buffer[cursor->cursX] = input_wchar;
-    
+                memmove(&line_current->buffer[buffer->cursX + 1], &line_current->buffer[buffer->cursX], line_current->size - buffer->cursX);
+                line_current->buffer[buffer->cursX] = input_wchar;
+
+                if(cursor->cursX > termInfo->width - 2)
+                {
+                    offset->xOffset += XSCROLL_VALUE;
+                    cursor->cursX += XSCROLL_VALUE;
+                }
+                else
+                    cursor->cursX++;
                 line_current->size++;
-                cursor->cursX++;
+                buffer->cursX++;
             }
             break;
     }
@@ -132,11 +151,21 @@ void input(void)
 static void move_home(void)
 {
     cursor->cursX = 0;
+    buffer->cursX = 0;
+    offset->xOffset = 0;
 }
 
 static void move_end(void)
 {
-    cursor->cursX = (int)line_current->size - 1;
+    if((int)line_current->size - 1 > termInfo->width)
+    {
+        cursor->cursX = termInfo->width - 1;
+        offset->xOffset = line_current->size - termInfo->width;
+    }
+    else
+        cursor->cursX = line_current->size - 1;
+
+    buffer->cursX = line_current->size - 1;
 }
 #endif // ALLOW_HOME_AND_END_KEY
 
@@ -148,11 +177,15 @@ static void move_up(void)
             offset->line_yOffset = offset->line_yOffset->prev;
         else
             cursor->cursY--;
+
         buffer->cursY--;
         line_current = line_current->prev;
-        if(cursor->cursX > (int)line_current->size - 1)
+        
+        // TODO: Put it to a function
+        if(buffer->cursX > (int)line_current->size - 1)
         {
-            cursor->cursX = line_current->size - 1;
+            buffer->cursX = line_current->size - 1;
+            cursor->cursX = (line_current->size - 1) % termInfo->width;
         }
     }
 }
@@ -168,52 +201,101 @@ static void move_down(void)
             offset->line_yOffset = offset->line_yOffset->next;
         else
             cursor->cursY++;
+
         buffer->cursY++;
         line_current = line_current->next;
         if(cursor->cursX > (int)line_current->size - 1)
         {
-            cursor->cursX = line_current->size - 1;
+            buffer->cursX = line_current->size - 1;
+            cursor->cursX = (line_current->size - 1) % termInfo->width;
         }
     }
 }
 
 static void move_left(void)
 {
-    if(cursor->cursX > 0)
-        cursor->cursX--;
+    if(buffer->cursX > 0)
+    {
+        if(cursor->cursX < 1)
+        {
+            offset->xOffset -= XSCROLL_VALUE;
+            cursor->cursX += XSCROLL_VALUE;
+        }
+
+        else
+            cursor->cursX--;
+
+        buffer->cursX--;
+    }
     else
     {
         if(line_current->prev != line_head)
         {
             line_current = line_current->prev;
-            cursor->cursY--;
-            buffer->cursY--;
-            cursor->cursX = line_current->size - 1;
+            
+            if(cursor->cursY < 1)
+            {
+                offset->line_yOffset = offset->line_yOffset->prev;
+                
+            }
+
+            else
+            {
+                cursor->cursY--;
+                buffer->cursY--;
+            }
+
+            buffer->cursX = line_current->size - 1;
+            cursor->cursX = (line_current->size - 1) % termInfo->width;
         }
     }
 }
 
 static void move_right(void)
 {
-    if(cursor->cursX < (int)line_current->size - 1)
-        cursor->cursX++;
+    if(buffer->cursX < (int)line_current->size - 1)
+    {
+        if (cursor->cursX > termInfo->width - 2)
+        {
+            offset->xOffset += XSCROLL_VALUE;
+            cursor->cursX -= XSCROLL_VALUE;
+        }
+        else
+            cursor->cursX++;
+        
+        buffer->cursX++;
+    }
+
     else
     {
         if(line_current->next != NULL)
         {
             line_current = line_current->next;
-            cursor->cursY++;
-            buffer->cursY++;
+
+            if(cursor->cursY > main_window->height - 2)
+            {
+                offset->line_yOffset = offset->line_yOffset->next;
+            }
+
+            else
+            {
+                cursor->cursY++;
+                buffer->cursY++;
+            }
+            
             cursor->cursX = 0;
+            buffer->cursX = 0;
+            offset->xOffset = 0;
         }
     }
 }
 
 static void tab(void)
 {
-    memmove(&line_current->buffer[cursor->cursX + TAB_WIDTH], &line_current->buffer[cursor->cursX], line_current->size - cursor->cursX); // Must memmove because of '\n' character
-    for(int i = cursor->cursX; i < cursor->cursX + TAB_WIDTH; i++)
+    memmove(&line_current->buffer[buffer->cursX + TAB_WIDTH], &line_current->buffer[buffer->cursX], line_current->size - buffer->cursX); // Must memmove because of '\n' character
+    for(int i = buffer->cursX; i < buffer->cursX + TAB_WIDTH; i++)
         line_current->buffer[i] = ' ';
     cursor->cursX += TAB_WIDTH;
+    buffer->cursX += TAB_WIDTH;
     line_current->size += TAB_WIDTH;
 }

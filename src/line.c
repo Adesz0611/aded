@@ -14,6 +14,8 @@ void line_init (void)
     offset = (Offset *)malloc(sizeof(*offset));
     memset(offset, 0, sizeof(*offset));
 
+    offset->xOffset = 0;
+
     line_tail = line_head;
     line_current = line_head;
 }
