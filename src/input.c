@@ -130,19 +130,16 @@ void input(void)
         case KEY_RIGHT:
             move_right();
             break;
-        // FIXME:
         default:
             if(isascii(input_wchar))
             {
                 memmove(&line_current->buffer[buffer->cursX + 1], &line_current->buffer[buffer->cursX], line_current->size - buffer->cursX);
                 line_current->buffer[buffer->cursX] = input_wchar;
 
-                // ----------------------------------------------- //
-
                 if(cursor->cursX > main_window->width - 2)
                 {
                     offset->xOffset += XSCROLL_VALUE;
-                    cursor->cursX -= XSCROLL_VALUE;
+                    cursor->cursX -= XSCROLL_VALUE - 1;
                 }
                 else
                     cursor->cursX++;
@@ -165,8 +162,12 @@ static void move_end(void)
 {
     if((int)line_current->size - 1 > termInfo->width)
     {
+        /*
         cursor->cursX = termInfo->width - 1;
         offset->xOffset = line_current->size - termInfo->width;
+        */
+        cursor->cursX = main_window->width - XSCROLL_VALUE;
+        offset->xOffset = line_current->size - XSCROLL_VALUE - 1;
     }
     else
         cursor->cursX = line_current->size - 1;
@@ -187,7 +188,7 @@ static void move_up(void)
         buffer->cursY--;
         line_current = line_current->prev;
         
-        // TODO: Put it to a function
+        // TODO: Put it into a function
         if(buffer->cursX > (int)line_current->size - 1)
         {
             buffer->cursX = line_current->size - 1;
@@ -218,6 +219,7 @@ static void move_down(void)
     }
 }
 
+// TODO: fix segfault
 static void move_left(void)
 {
     if(buffer->cursX > 0)
@@ -225,7 +227,7 @@ static void move_left(void)
         if(cursor->cursX < 1)
         {
             offset->xOffset -= XSCROLL_VALUE;
-            cursor->cursX += XSCROLL_VALUE;
+            cursor->cursX += XSCROLL_VALUE - 1;
         }
 
         else
@@ -264,7 +266,7 @@ static void move_right(void)
         if (cursor->cursX > termInfo->width - 2)
         {
             offset->xOffset += XSCROLL_VALUE;
-            cursor->cursX -= XSCROLL_VALUE;
+            cursor->cursX -= XSCROLL_VALUE - 1;
         }
         else
             cursor->cursX++;
