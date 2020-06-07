@@ -219,15 +219,22 @@ static void move_down(void)
     }
 }
 
-// TODO: fix segfault
 static void move_left(void)
 {
     if(buffer->cursX > 0)
     {
         if(cursor->cursX < 1)
         {
-            offset->xOffset -= XSCROLL_VALUE;
-            cursor->cursX += XSCROLL_VALUE - 1;
+            if(buffer->cursX < XSCROLL_VALUE)
+            {
+                offset->xOffset -= buffer->cursX;
+                cursor->cursX += buffer->cursX - 1;
+            }
+            else
+            {
+                offset->xOffset -= XSCROLL_VALUE;
+                cursor->cursX += XSCROLL_VALUE - 1;
+            }
         }
 
         else
