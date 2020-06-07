@@ -69,7 +69,6 @@ void input(void)
         case 127:
         case '\b':
 
-        // FIXME:
         case KEY_BACKSPACE:
             if(buffer->cursX > 0)
             {
@@ -78,8 +77,17 @@ void input(void)
 
                 if(cursor->cursX < 1)
                 {
-                    offset->xOffset -= XSCROLL_VALUE;
-                    cursor->cursX += XSCROLL_VALUE;
+                    // TODO: Put it into a function
+                    if(buffer->cursX < XSCROLL_VALUE)
+                    {
+                        offset->xOffset -= buffer->cursX;
+                        cursor->cursX += buffer->cursX;
+                    }
+                    else
+                    {
+                        offset->xOffset -= XSCROLL_VALUE;
+                        cursor->cursX += XSCROLL_VALUE;
+                    }    
                 }
 
                 cursor->cursX--;
@@ -262,7 +270,7 @@ static void move_left(void)
             }
 
             buffer->cursX = line_current->size - 1;
-            cursor->cursX = (line_current->size - 1) % termInfo->width;
+            cursor->cursX = (line_current->size - 1) % main_window->width;
         }
     }
 }

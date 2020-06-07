@@ -5,6 +5,7 @@
 #include "defs.h"
 #include "buffer.h"
 #include "cursor.h"
+#include "curses.h"
 
 void line_init (void)
 {
@@ -60,13 +61,27 @@ line_t *line_add(const char *text)
 
 void line_delete(enum line_delete_flag flag)
 {
+    // Pointer to the line that will be deleted
     line_t *tmp;
 
     if(flag != BY_DELETE)
     {
         line_current = line_current->prev;
-        cursor->cursX = line_current->size - 1;
         tmp = line_current->next;
+
+        /* ------------------------------ */
+
+        if(main_window->width < (int)line_current->size - 1)
+        {
+            cursor->cursX = main_window->width - XSCROLL_VALUE;
+            offset->xOffset = line_current->size - XSCROLL_VALUE - 1;
+        }
+        else
+        {
+            cursor->cursX = (line_current->size - 1) % main_window->width;
+        }
+        
+        buffer->cursX = line_current->size - 1;
     }
     else
     {
@@ -80,7 +95,7 @@ void line_delete(enum line_delete_flag flag)
     {
         // Move the line's buffer that be deleted to the prev line's end
         // We don't use memmove() here because the memory don't overlap
-        memcpy(&line_current->buffer[cursor->cursX], &tmp->buffer[0], tmp->size - 1); // -1 Because of '\n' character
+        memcpy(&line_current->buffer[buffer->cursX], &tmp->buffer[0], tmp->size - 1); // -1 Because of '\n' character
         line_current->size += tmp->size - 1; // +1 for '\n'
         line_current->buffer[line_current->size - 1] = '\n';
     }
