@@ -15,6 +15,7 @@
 #include "defs.h"
 #include "file.h"
 #include "cursor.h"
+#include "types.h"
 
 static wchar_t input_wchar;
 
@@ -307,10 +308,23 @@ static void move_right(void)
 
 static void tab(void)
 {
-    memmove(&line_current->buffer[buffer->cursX + TAB_WIDTH], &line_current->buffer[buffer->cursX], line_current->size - buffer->cursX); // Must memmove because of '\n' character
-    for(int i = buffer->cursX; i < buffer->cursX + TAB_WIDTH; i++)
+    u8 tmp_tabsize = buffer->cursX % TAB_WIDTH;
+    tmp_tabsize = TAB_WIDTH - tmp_tabsize;
+
+    memmove(&line_current->buffer[buffer->cursX + tmp_tabsize], &line_current->buffer[buffer->cursX], line_current->size - buffer->cursX); // Must memmove because of '\n' character
+    for(int i = buffer->cursX; i < buffer->cursX + tmp_tabsize; i++)
         line_current->buffer[i] = ' ';
-    cursor->cursX += TAB_WIDTH;
-    buffer->cursX += TAB_WIDTH;
-    line_current->size += TAB_WIDTH;
+    
+    if (cursor->cursX > termInfo->width - 2)
+    {
+        offset->xOffset += XSCROLL_VALUE + tmp_tabsize;
+        cursor->cursX -= XSCROLL_VALUE;
+    }
+    else
+    {
+        cursor->cursX += tmp_tabsize;
+    }
+
+    buffer->cursX += tmp_tabsize;
+    line_current->size += tmp_tabsize;
 }
