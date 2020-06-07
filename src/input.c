@@ -103,7 +103,6 @@ void input(void)
             }
             break;
 
-        // FIXME:
         case KEY_DC: // Delete key
             if(buffer->cursX < (int)line_current->size - 1)
             {
