@@ -78,7 +78,7 @@ void line_delete(enum line_delete_flag flag)
         }
         else
         {
-            cursor->cursX = (line_current->size - 1) % main_window->width;
+            cursor->cursX = line_current->size - 1;
         }
         
         buffer->cursX = line_current->size - 1;

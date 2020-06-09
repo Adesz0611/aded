@@ -3,7 +3,7 @@ PROGNAME = aded
 
 CC = gcc
 WARNINGS = -Wall -Wextra
-CFLAGS = $(WARNINGS) -lncursesw -ggdb -O2 #-DALLOW_DEBUG
+CFLAGS = $(WARNINGS) -lncursesw -ggdb -O2 -g #-DALLOW_DEBUG
 
 BINDIR = /usr/local/bin
 SRCDIR = src
