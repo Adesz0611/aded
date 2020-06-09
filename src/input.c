@@ -232,7 +232,6 @@ static void move_up(void)
 // #define move_left move_any(1, 0, 0, 0)
 // #define move_up move_any(0, 1, 0, 0)
 
-// FIXME:
 static void move_down(void)
 {
     if(line_current->next != NULL)
@@ -244,10 +243,25 @@ static void move_down(void)
 
         buffer->cursY++;
         line_current = line_current->next;
-        if(cursor->cursX > (int)line_current->size - 1)
+        if(buffer->cursX > (int)line_current->size - 1)
         {
+            if(main_window->width < (int)line_current->size - 1)
+            {
+                if(offset->xOffset < line_current->size - 1)
+                    cursor->cursX = (line_current->size - 1) - offset->xOffset;
+                else
+                {
+                    cursor->cursX = main_window->width - XSCROLL_VALUE;
+                    offset->xOffset = line_current->size - XSCROLL_VALUE - 1;
+                }
+            }
+            else
+            {
+                cursor->cursX = line_current->size - 1;
+                offset->xOffset = 0;
+            }
+
             buffer->cursX = line_current->size - 1;
-            cursor->cursX = (line_current->size - 1) % main_window->width;
         }
     }
 }
@@ -292,9 +306,17 @@ static void move_left(void)
                 cursor->cursY--;
                 buffer->cursY--;
             }
+            
+            
+            if(line_current->size - 1 > main_window->width)
+            {
+                cursor->cursX = main_window->width - XSCROLL_VALUE;
+                offset->xOffset = line_current->size - XSCROLL_VALUE - 1;
+            }
+            else
+                cursor->cursX = line_current->size - 1;
 
             buffer->cursX = line_current->size - 1;
-            cursor->cursX = (line_current->size - 1) % main_window->width;
         }
     }
 }
