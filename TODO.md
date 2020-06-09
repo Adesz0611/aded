@@ -1,6 +1,6 @@
 TODO:
 =====
-- fix move down and move end
+- fix move end
 - Optimaze cursor movement (Don't draw the hole screen when move around with cursor)
 - Implement file load (file.c)
 
@@ -15,3 +15,5 @@ DONE:
 - Status bar
 - Display cursor's position in statusbar
 - xOffset implement
+- fix move down
+- fix move left
