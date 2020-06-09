@@ -308,7 +308,7 @@ static void move_left(void)
             }
             
             
-            if(line_current->size - 1 > main_window->width)
+            if((int)line_current->size - 1 > main_window->width)
             {
                 cursor->cursX = main_window->width - XSCROLL_VALUE;
                 offset->xOffset = line_current->size - XSCROLL_VALUE - 1;
@@ -369,7 +369,7 @@ static void tab(void)
     for(int i = buffer->cursX; i < buffer->cursX + tmp_tabsize; i++)
         line_current->buffer[i] = ' ';
     
-    if (cursor->cursX > termInfo->width - 2)
+    if (cursor->cursX + tmp_tabsize > main_window->width)
     {
         offset->xOffset += XSCROLL_VALUE + tmp_tabsize;
         cursor->cursX -= XSCROLL_VALUE;

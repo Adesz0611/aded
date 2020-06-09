@@ -17,3 +17,4 @@ DONE:
 - xOffset implement
 - fix move down
 - fix move left
+- fix scroll when press tab
