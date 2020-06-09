@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <locale.h>
 
 #include "types.h"
 #include "defs.h"
@@ -18,6 +19,7 @@
 #include "version.h"
 #include "statusbar.h"
 #include "cursor.h"
+#include "utf8.h"
 
 #if __unix__
 #include <signal.h>
@@ -30,6 +32,7 @@ static void destroy(void);
 int main (int argc, const char *argv[])
 {
     atexit(destroy);
+    setlocale(LC_ALL, "");
 
 #if __unix__
     signal(SIGHUP, emergencyexit);
@@ -55,7 +58,9 @@ int main (int argc, const char *argv[])
         else
         {
             scpy(file->filename, argv[1]);
-            file->name_length = strlen(file->filename);
+            
+            file->name_length = utf8_strlen(file->filename);
+            file->name_size = strlen(file->filename);
         }
     }
     curses_init();

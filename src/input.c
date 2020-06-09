@@ -29,6 +29,7 @@ static void move_left(void);
 static void move_right(void);
 static void tab(void);
 
+
 void input(void)
 {
     input_wchar = wgetch(main_window->window);
@@ -77,7 +78,6 @@ void input(void)
 
                 if(cursor->cursX < 1)
                 {
-                    // TODO: Put it into a function
                     if(buffer->cursX < XSCROLL_VALUE)
                     {
                         offset->xOffset -= buffer->cursX;
@@ -87,7 +87,7 @@ void input(void)
                     {
                         offset->xOffset -= XSCROLL_VALUE;
                         cursor->cursX += XSCROLL_VALUE;
-                    }    
+                    } 
                 }
 
                 cursor->cursX--;

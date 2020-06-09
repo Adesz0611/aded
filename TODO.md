@@ -1,6 +1,7 @@
 TODO:
 =====
 - fix move end
+- fix horizontal resize
 - Optimaze cursor movement (Don't draw the hole screen when move around with cursor)
 - Implement file load (file.c)
 
