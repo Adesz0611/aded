@@ -73,12 +73,18 @@ void curses_resize()
         cursor->cursY--;
     }
 
-    /*
+
     // Check horizontally
-    if(line_current->)
+    if(line_current->buffer[buffer->cursX - XSCROLL_VALUE] != '\0' && cursor->cursX + 1 > main_window->width)
     {
-    
-    }*/
+        offset->xOffset += XSCROLL_VALUE;
+        cursor->cursX -= XSCROLL_VALUE;
+    }
+    else if(line_current->buffer[buffer->cursX - 1] != '\0' && cursor->cursX + 1 > main_window->width)
+    {
+        offset->xOffset++;
+        cursor->cursX--;
+    }
 }
 
 void curses_clean(void)

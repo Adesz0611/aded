@@ -1,7 +1,5 @@
 TODO:
 =====
-- fix move end
-- fix horizontal resize
 - Optimaze cursor movement (Don't draw the hole screen when move around with cursor)
 
 DONE:
@@ -19,3 +17,5 @@ DONE:
 - fix move left
 - fix scroll when press tab
 - Implement file load (file.c)
+- fix move end
+- fix horizontal resize
