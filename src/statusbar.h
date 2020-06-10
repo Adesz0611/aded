@@ -29,3 +29,4 @@ Statusbar *statusbar;
 
 void statusbar_init(enum statusbar_position_enum stbar_pos);
 void statusbar_display(void);
+void statusbar_clean(void);

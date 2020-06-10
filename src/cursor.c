@@ -14,3 +14,8 @@ void cursor_init(void)
 
     cursor->cursX = cursor->cursY = 0;
 }
+
+void cursor_clean(void)
+{
+    free(cursor);
+}

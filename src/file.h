@@ -22,3 +22,4 @@ void file_init(void);
 bool file_exist(const char *path);
 void file_save(void);
 void file_load(const char *path);
+void file_clean(void);

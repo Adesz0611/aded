@@ -139,3 +139,18 @@ void line_delete(enum line_delete_flag flag)
         buffer->cursY--;
     }
 }
+
+
+/* This function free all of used line memory
+   ONLY use at exit!                          */
+void line_clean(void)
+{
+    line_t *tmp;
+    
+    // First free the lines
+    for(tmp = line_head; tmp != NULL; tmp = tmp->next)
+        free(tmp);
+
+    // Free the offset struct
+    free(offset);
+}

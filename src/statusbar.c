@@ -39,3 +39,8 @@ void statusbar_display(void)
 
     wrefresh(statusbar->window->window);
 }
+
+void statusbar_clean(void)
+{
+    free(statusbar);
+}

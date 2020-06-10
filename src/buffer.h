@@ -11,3 +11,4 @@ typedef struct {
 buffer_t *buffer;
 
 void buffer_init(void);
+void buffer_clean(void);

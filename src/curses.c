@@ -77,4 +77,6 @@ void curses_resize()
 void curses_clean(void)
 {
     endwin();
+    free(termInfo);
+    free(main_window);
 }

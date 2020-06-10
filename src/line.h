@@ -34,3 +34,4 @@ void line_init(void);
 line_t *line_add(const char *text);
 line_t *line_addFile(void);
 void line_delete(enum line_delete_flag flag);
+void line_clean(void);

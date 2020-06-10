@@ -15,3 +15,4 @@ typedef struct {
 Cursor *cursor;
 
 void cursor_init(void);
+void cursor_clean(void);

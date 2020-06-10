@@ -13,3 +13,8 @@ void buffer_init(void)
    memset(buffer, 0, sizeof(*buffer));
    buffer->cursX = buffer->cursY = 0;
 }
+
+void buffer_clean(void)
+{
+    free(buffer);
+}

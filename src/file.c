@@ -87,3 +87,8 @@ void file_load(const char *path)
 
     fclose(tmp_file);
 }
+
+void file_clean(void)
+{
+    free(file);
+}
