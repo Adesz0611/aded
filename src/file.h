@@ -13,9 +13,12 @@ typedef struct {
     size_t name_size;       /* Filename's size in bytes */
     size_t name_length;     /* Filename's length in characters */
 
+    bool fileExist;
 } file_t;
 
 file_t *file;
 
 void file_init(void);
+bool file_exist(const char *path);
 void file_save(void);
+void file_load(const char *path);

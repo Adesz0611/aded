@@ -9,6 +9,7 @@ enum line_delete_flag {
     BY_DELETE
 };
 
+
 typedef struct line_t{
     char *buffer;
     size_t size;
@@ -31,4 +32,5 @@ Offset *offset;
 
 void line_init(void);
 line_t *line_add(const char *text);
+line_t *line_addFile(void);
 void line_delete(enum line_delete_flag flag);

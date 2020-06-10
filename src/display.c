@@ -27,9 +27,9 @@ void display_buffer(void)
     {
         for(n = 0; n < main_window->width && tmp->buffer[n] != '\0'; n++)
         {
-            #if DISPLAY_DOLLAR_AS_NEWLINE
-            if(tmp->buffer[n] == '\n')
-                mvwprintw(main_window->window, i, n, /*"¶"*/"$");
+            #if DISPLAY_PILCROW_AS_NEWLINE
+            if(tmp->buffer[n + offset->xOffset] == '\n')
+                mvwprintw(main_window->window, i, n, "¶");
             else
             #endif
                 mvwprintw(main_window->window, i, n, "%c", tmp->buffer[n + offset->xOffset]);

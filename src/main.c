@@ -41,6 +41,7 @@ int main (int argc, const char *argv[])
 
     // init
     file_init();
+    line_init();
     
     if(argc > 1)
     {
@@ -58,19 +59,36 @@ int main (int argc, const char *argv[])
         else
         {
             scpy(file->filename, argv[1]);
-            
+ 
             file->name_length = utf8_strlen(file->filename);
             file->name_size = strlen(file->filename);
+
+            // Check the file is exist or not
+            if(file_exist(file->filename))
+            {
+                offset->line_yOffset = line_current = line_addFile(); // First line
+                file->fileExist = true;
+                file_load(file->filename);
+            }
+            else
+            {
+                offset->line_yOffset = line_add(""); // First line
+                file->fileExist = false;
+            }
         }
     }
+    
+    // If there is no argument
+    else
+    {
+        offset->line_yOffset = line_current = line_add(""); // First line
+    }
+
+
     curses_init();
     cursor_init();
     buffer_init();
-    line_init();
     statusbar_init(STBAR_POS_BOTTOM);
-
-    line_add(""); // First line
-    offset->line_yOffset = line_head->next;
 
     statusbar_display();
     

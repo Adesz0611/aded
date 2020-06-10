@@ -57,6 +57,23 @@ line_t *line_add(const char *text)
     return tmp;
 }
 
+line_t *line_addFile(void)
+{
+    line_t *tmp = (line_t *)malloc(sizeof(*tmp));
+    memset(tmp, 0, sizeof(*tmp));
+
+    tmp->buffer = malloc(MAXLINE);
+    memset(tmp->buffer, 0, MAXLINE);
+
+    tmp->size = 0;
+
+    line_tail->next = tmp;
+    tmp->prev = line_tail;
+    line_tail = tmp;
+
+    return tmp;
+}
+
 /* Line delete stupid solution*/
 
 void line_delete(enum line_delete_flag flag)
