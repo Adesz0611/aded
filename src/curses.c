@@ -66,12 +66,19 @@ void curses_resize()
     DEBUGF("termInfo->height (y) = %d\n", termInfo->height);
     DEBUGF("termInfo->width (x) = %d\n\n", termInfo->width);
 
-
+    // Check vertically
     if(offset->line_yOffset->next != NULL && cursor->cursY + 1 > main_window->height)
     {
         offset->line_yOffset = offset->line_yOffset->next;
         cursor->cursY--;
     }
+
+    /*
+    // Check horizontally
+    if(line_current->)
+    {
+    
+    }*/
 }
 
 void curses_clean(void)

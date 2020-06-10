@@ -166,22 +166,19 @@ static void move_home(void)
     offset->xOffset = 0;
 }
 
-// FIXME:
 static void move_end(void)
 {
-    if((int)line_current->size - 1 > termInfo->width)
+    if((int)line_current->size - 1 > termInfo->width - 1)
     {
-        /*
-        if(line_current->size - 1 > offset->xOffset 
-           && line_current->size - 1 < line_current->size - 1 + main_window->width - (line_current->size - 1) % main_window->width)
+        if (line_current->size - 1 - offset->xOffset < (size_t)main_window->width)
         {
             cursor->cursX = (line_current->size - 1) - offset->xOffset;
         }
         else
-        { */
+        {
             cursor->cursX = main_window->width - XSCROLL_VALUE;
             offset->xOffset = line_current->size - XSCROLL_VALUE - 1;
-        //}
+        }
     }
     else
     {

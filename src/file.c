@@ -67,6 +67,12 @@ void file_load(const char *path)
         exit(EXIT_FAILURE);
     }
 
+    fseek(tmp_file, 0, SEEK_END);
+    long tmp_size = ftell(tmp_file);
+    fseek(tmp_file, 0, SEEK_SET);
+
+    size_t cur_s = 0;
+
     // Load the file to the buffer
     while((c = fgetc(tmp_file)) != EOF)
     {
@@ -74,16 +80,19 @@ void file_load(const char *path)
         tmp_line->size++;
 
         i++;
-        if(c == '\n')
+        cur_s++;
+        if(c == '\n' && (long int)cur_s != tmp_size)
         {
             tmp_line = line_addFile();
             i = 0;
         }
     }
 
-    line_tail = tmp_line->prev;
-    line_tail->next = NULL;
-    free(tmp_line);
+    if(tmp_line->buffer[tmp_line->size - 1] != '\n')
+    {
+        tmp_line->buffer[tmp_line->size] = '\n';
+        tmp_line->size++;
+    }
 
     fclose(tmp_file);
 }
