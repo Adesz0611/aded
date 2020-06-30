@@ -145,11 +145,20 @@ void line_delete(enum line_delete_flag flag)
    ONLY use at exit!                          */
 void line_clean(void)
 {
-    line_t *tmp;
+    line_t *tmp = line_head->next;
+    line_t *next_tmp = NULL;
     
+    // First free the line_head which hasn't got buffer
+    free(line_head);
+
     // First free the lines
-    for(tmp = line_head; tmp != NULL; tmp = tmp->next)
+    for( ; tmp != NULL; )
+    {
+        next_tmp = tmp->next;
+        free(tmp->buffer);
         free(tmp);
+        tmp = next_tmp;
+    }
 
     // Free the offset struct
     free(offset);

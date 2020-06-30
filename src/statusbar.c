@@ -42,5 +42,6 @@ void statusbar_display(void)
 
 void statusbar_clean(void)
 {
+    free(statusbar->window);
     free(statusbar);
 }

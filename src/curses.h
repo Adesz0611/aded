@@ -21,6 +21,11 @@ TerminalInfo *termInfo;
 ADED_WINDOW *main_window;
 
 void curses_init(void);
+
+// Window stuffs
 ADED_WINDOW *curses_windowAdd(int height, int width, int startY, int startX);
+void curses_windowDelete(ADED_WINDOW *win);
+void curses_windowResize(ADED_WINDOW *win, int height, int width);
+
 void curses_resize();
 void curses_clean(void);

@@ -46,18 +46,32 @@ ADED_WINDOW *curses_windowAdd(int height, int width, int startY, int startX)
     return tmp;
 }
 
-// TODO: manage horizontal resize
+void curses_windowDelete(ADED_WINDOW *win)
+{
+    delwin(win->window); // NCURSES' function
+    free(win);
+}
+
+void curses_windowResize(ADED_WINDOW *win, int height, int width)
+{
+    wresize(win->window, height, width);
+    win->height = height;
+    win->width  = width;
+}
+
 void curses_resize()
 {
+    // Ncurses' docs says that you should call endwin(), 
+    // followed by a refresh() to properly update curses
     endwin();
     refresh();
+
+    // Get the terminal's new size
     getmaxyx(stdscr, termInfo->height, termInfo->width);
    
     // Resize the main window
-    wresize(main_window->window, termInfo->height - 1, termInfo->width);
-    main_window->height = termInfo->height - 1;
-    main_window->width = termInfo->width;
-
+    curses_windowResize(main_window, termInfo->height - 1, termInfo->width);
+    
     // Resize the statusbar
     wresize(statusbar->window->window, 1, termInfo->width);
     statusbar->window->width = termInfo->width;
@@ -89,7 +103,7 @@ void curses_resize()
 
 void curses_clean(void)
 {
-    endwin();
     free(termInfo);
-    free(main_window);
+    curses_windowDelete(main_window);
+    endwin();
 }
