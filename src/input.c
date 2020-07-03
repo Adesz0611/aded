@@ -8,6 +8,8 @@
 #include <errno.h>
 #include <ctype.h>
 
+#include <unistd.h>
+
 #include "curses.h"
 #include "input.h"
 #include "buffer.h"
@@ -16,6 +18,7 @@
 #include "file.h"
 #include "cursor.h"
 #include "types.h"
+#include "display.h"
 
 static wchar_t input_wchar;
 
@@ -234,7 +237,19 @@ static void move_down(void)
     if(line_current->next != NULL)
     {
         if(cursor->cursY > main_window->height - 2)
+        {
             offset->line_yOffset = offset->line_yOffset->next;
+            
+             
+            // TODO:
+            /*
+            display_scroll(main_window, FORWARD);
+            display_line(main_window, line_current->next, main_window->height - 1);
+            wmove(main_window->window, cursor->cursY, cursor->cursX);
+            wrefresh(main_window->window);
+            sleep(30);
+            */
+        }
         else
             cursor->cursY++;
 

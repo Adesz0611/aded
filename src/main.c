@@ -94,7 +94,7 @@ int main (int argc, const char *argv[])
     
     while(1)
     {
-        display_buffer();
+        display_buffer(main_window);
         statusbar_display();
         wmove(main_window->window, cursor->cursY, cursor->cursX);
         input();

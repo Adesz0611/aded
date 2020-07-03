@@ -1,5 +1,6 @@
 TODO:
 =====
+- implement blank-row function, blank-statusbar function etc.
 - Optimaze cursor movement (Don't draw the hole screen when move around with cursor)
 
 DONE:
