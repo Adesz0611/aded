@@ -12,7 +12,7 @@ enum scroll_direction {
     BACKWARD
 };
 
-void display_buffer(ADED_WINDOW *win);
+void display_buffer(ADED_WINDOW *win, line_t *line, int y, int nrow);
 
 //-- Blank --//
 void display_blankRow(ADED_WINDOW *win, int y, int x, int n);

@@ -90,11 +90,12 @@ int main (int argc, const char *argv[])
     buffer_init();
     statusbar_init(STBAR_POS_BOTTOM);
 
+    
+    display_buffer(main_window, offset->line_yOffset, 0, main_window->height);
     statusbar_display();
     
     while(1)
     {
-        display_buffer(main_window);
         statusbar_display();
         wmove(main_window->window, cursor->cursY, cursor->cursX);
         input();

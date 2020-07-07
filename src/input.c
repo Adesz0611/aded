@@ -61,9 +61,20 @@ void input(void)
             line_current->buffer[line_current->size - 1] = '\n';
             
             if(cursor->cursY > main_window->height - 2)
+            {
                 offset->line_yOffset = offset->line_yOffset->next;
+                display_scroll(main_window, FORWARD);
+            }
             else
+            {
                 cursor->cursY++;
+
+                if(line_current != line_tail)
+                {
+                    display_blankRow(main_window, cursor->cursY - 1, (line_current->prev->size - 1 - offset->xOffset > main_window->width) ? main_window->width : line_current->prev->size - 1, main_window->width - cursor->cursX);
+                    display_buffer(main_window, line_current, cursor->cursY, main_window->height - cursor->cursY);
+                }
+            }
             buffer->cursY++;
 
             cursor->cursX = 0;
@@ -72,7 +83,6 @@ void input(void)
             break;
         case 127:
         case '\b':
-
         case KEY_BACKSPACE:
             if(buffer->cursX > 0)
             {
@@ -90,7 +100,13 @@ void input(void)
                     {
                         offset->xOffset -= XSCROLL_VALUE;
                         cursor->cursX += XSCROLL_VALUE;
-                    } 
+                    }
+
+                    display_buffer(main_window, offset->line_yOffset, 0, main_window->height);
+                }
+                else
+                {
+                    display_blankRow(main_window, cursor->cursY, cursor->cursX - 1, 1);
                 }
 
                 cursor->cursX--;
@@ -102,6 +118,7 @@ void input(void)
                 if(line_current->prev != line_head)
                 { 
                     line_delete(BY_BACKSPACE);
+                    display_buffer(main_window, line_current, cursor->cursY, main_window->height - cursor->cursY);
                 }
             }
             break;
@@ -112,10 +129,15 @@ void input(void)
                 memmove(&line_current->buffer[buffer->cursX], &line_current->buffer[buffer->cursX + 1], line_current->size - buffer->cursX);
                 line_current->buffer[line_current->size + 1] = '\0';
                 line_current->size--;
+                display_blankRow(main_window, cursor->cursY, cursor->cursX, main_window->width - cursor->cursX);
+                display_line(main_window, line_current, cursor->cursY);
             }
             else if(line_current->next != NULL)
             {
                 line_delete(BY_DELETE);
+                
+                // TODO: Can optimize more ;)
+                display_buffer(main_window, line_current, cursor->cursY, main_window->height - cursor->cursY);
             }
             break;
         case KEY_TAB:
@@ -151,9 +173,16 @@ void input(void)
                 {
                     offset->xOffset += XSCROLL_VALUE;
                     cursor->cursX -= XSCROLL_VALUE - 1;
+                    display_buffer(main_window, offset->line_yOffset, 0, main_window->height);
                 }
                 else
+                {
                     cursor->cursX++;
+                    
+                    // TODO: Optimize it
+                    display_blankRow(main_window, cursor->cursY, (line_current->size - 1 - offset->xOffset > main_window->width) ? main_window->width : line_current->size - 1, main_window->width - cursor->cursX);
+                    display_line(main_window, line_current, cursor->cursY);
+                }
                 line_current->size++;
                 buffer->cursX++;
             }
@@ -166,6 +195,10 @@ static void move_home(void)
 {
     cursor->cursX = 0;
     buffer->cursX = 0;
+
+    if(offset->xOffset != 0)
+        display_buffer(main_window, offset->line_yOffset, 0, main_window->height);
+
     offset->xOffset = 0;
 }
 
@@ -182,6 +215,8 @@ static void move_end(void)
             cursor->cursX = main_window->width - XSCROLL_VALUE;
             offset->xOffset = line_current->size - XSCROLL_VALUE - 1;
         }
+
+        display_buffer(main_window, offset->line_yOffset, 0, main_window->height);
     }
     else
     {
@@ -198,7 +233,11 @@ static void move_up(void)
     if(line_current->prev != line_head)
     {
         if(cursor->cursY < 1)
+        {
             offset->line_yOffset = offset->line_yOffset->prev;
+            if(offset->line_yOffset->prev != line_head)
+                display_scroll(main_window, BACKWARD);
+        }
         else
             cursor->cursY--;
 
@@ -239,16 +278,7 @@ static void move_down(void)
         if(cursor->cursY > main_window->height - 2)
         {
             offset->line_yOffset = offset->line_yOffset->next;
-            
-             
-            // TODO:
-            /*
             display_scroll(main_window, FORWARD);
-            display_line(main_window, line_current->next, main_window->height - 1);
-            wmove(main_window->window, cursor->cursY, cursor->cursX);
-            wrefresh(main_window->window);
-            sleep(30);
-            */
         }
         else
             cursor->cursY++;
@@ -385,10 +415,14 @@ static void tab(void)
     {
         offset->xOffset += XSCROLL_VALUE + tmp_tabsize;
         cursor->cursX -= XSCROLL_VALUE;
+
+        display_buffer(main_window, offset->line_yOffset, 0, main_window->height);
     }
     else
     {
         cursor->cursX += tmp_tabsize;
+        display_blankRow(main_window, cursor->cursY, main_window->height, main_window->height - cursor->cursX);
+        display_line(main_window, line_current, cursor->cursY);
     }
 
     buffer->cursX += tmp_tabsize;
