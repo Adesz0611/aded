@@ -17,12 +17,12 @@ void display_buffer(ADED_WINDOW *win, line_t *line, int y, int nrow)
     
     for(i = y; i < y + nrow; i++)
     {
-        display_blankRow(win, i, win->width, win->width);
+        display_blankRow(win, i, 0, win->width);
     }
 
     for(i = y; i < y + nrow && tmp != NULL; i++, tmp = tmp->next)
     {
-        display_line(win, tmp, i);
+        display_line(win, tmp, i, 0, win->width);
     }
 }
 
@@ -42,16 +42,16 @@ void display_blankRow(ADED_WINDOW *win, int y, int x, int n)
 // TODO:    implement a display_nline(ADED_WINDOW *win, line_t *line, int y, int x, int n) funtion then
 //          define a macro for display_line(ADED_WINDOW *win, line_t *line, int y)
 /* Display n characters of a line*/
-void display_line(ADED_WINDOW *win, line_t *line, int row)
+void display_line(ADED_WINDOW *win, line_t *line, int y, int x, int n)
 {
-    for(int i = 0; i < win->width && line->buffer[i] != '\0'; i++)
+    for(int i = x; i < x + n && line->buffer[i] != '\0'; i++)
     {
             #if DISPLAY_PILCROW_AS_NEWLINE
             if(line->buffer[i + offset->xOffset] == '\n')
-                mvwprintw(win->window, row, i, "¶");
+                mvwprintw(win->window, y, i, "¶");
             else
             #endif
-                mvwprintw(win->window, row, i, "%c", line->buffer[i + offset->xOffset]);
+                mvwprintw(win->window, y, i, "%c", line->buffer[i + offset->xOffset]);
     }
 }
 
@@ -63,19 +63,11 @@ void display_scroll(ADED_WINDOW *win, enum scroll_direction direction)
 
     if(direction == FORWARD)
     {
-        display_blankRow(win, win->height, win->width, win->width);
-    
-        // If the next line is exist
-        if(line_current->next != NULL)
-            display_line(main_window, line_current->next, main_window->height - 1); // Display it, otherwise not
+        display_blankRow(win, win->height, 0, win->width);
     }
 
     else
     {
-        display_blankRow(win, 0, win->width, win->width);
-    
-        // If the yOffset line's previous is exist
-        if(offset->line_yOffset->prev != line_head)
-            display_line(main_window, offset->line_yOffset->prev, 0); // Display it, otherwise not
+        display_blankRow(win, 0, 0, win->width); 
     }
 }
