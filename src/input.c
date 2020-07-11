@@ -8,8 +8,6 @@
 #include <errno.h>
 #include <ctype.h>
 
-#include <unistd.h>
-
 #include "curses.h"
 #include "input.h"
 #include "buffer.h"
@@ -199,8 +197,6 @@ void input(void)
     }
 }
 
-// TODO: Fix the scroll redraw
-// Felscrolloz egy olyan line-t, amit törölni kéne
 static void enter(void)
 {
     line_add("");
@@ -247,10 +243,7 @@ static void enter(void)
     offset->xOffset = 0;
     
     if(shouldRedraw)
-    {
         display_buffer(main_window, offset->line_yOffset, 0, main_window->height);
-        beep();
-    }
 
     cursor->cursX = 0;
     buffer->cursX = 0;

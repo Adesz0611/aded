@@ -8,6 +8,7 @@
 #include "defs.h"
 #include "statusbar.h"
 #include "cursor.h"
+#include "display.h"
 
 void curses_init(void)
 {
@@ -99,6 +100,8 @@ void curses_resize()
         offset->xOffset++;
         cursor->cursX--;
     }
+
+    display_buffer(main_window, offset->line_yOffset, 0, main_window->height);
 }
 
 void curses_clean(void)

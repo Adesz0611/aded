@@ -39,8 +39,6 @@ void display_blankRow(ADED_WINDOW *win, int y, int x, int n)
 
 /*-- Draw --*/
 
-// TODO:    implement a display_nline(ADED_WINDOW *win, line_t *line, int y, int x, int n) funtion then
-//          define a macro for display_line(ADED_WINDOW *win, line_t *line, int y)
 /* Display n characters of a line*/
 void display_line(ADED_WINDOW *win, line_t *line, int y, int x, int n)
 {
