@@ -128,6 +128,8 @@ void line_delete(enum line_delete_flag flag)
         line_current->next = NULL;
         line_tail = line_current;
     }
+
+    free(tmp->buffer);
     free(tmp);
 
     if(flag != BY_DELETE)
