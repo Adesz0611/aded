@@ -10,6 +10,9 @@
 #include "cursor.h"
 #include "display.h"
 
+TerminalInfo *termInfo;
+ADED_WINDOW *main_window;
+
 void curses_init(void)
 {
     // Initialize NCURSES

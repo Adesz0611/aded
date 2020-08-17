@@ -42,6 +42,7 @@ void display_blankRow(ADED_WINDOW *win, int y, int x, int n)
 /* Display n characters of a line*/
 void display_line(ADED_WINDOW *win, line_t *line, int y, int x, int n)
 {
+    /*
     for(int i = x; i < x + n && line->buffer[i] != '\0'; i++)
     {
             #if DISPLAY_PILCROW_AS_NEWLINE
@@ -51,6 +52,13 @@ void display_line(ADED_WINDOW *win, line_t *line, int y, int x, int n)
             #endif
                 mvwprintw(win->window, y, i, "%c", line->buffer[i + offset->xOffset]);
     }
+    */
+    wmove(win->window, y, x);
+    waddnstr(win->window, &line->buffer[x + offset->xOffset], n);
+#if DISPLAY_PILCROW_AS_NEWLINE
+    if(line->buffer[line->size - 1] == '\n')
+        waddstr(win->window, "¶");
+#endif
 }
 
 void display_scroll(ADED_WINDOW *win, enum scroll_direction direction)

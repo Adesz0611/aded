@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LINE_H
+#define LINE_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,12 +23,11 @@ typedef struct {
     unsigned xOffset;
 } Offset;
 
-line_t *line_head;
-line_t *line_tail;
-line_t *line_current;
-//line_t *line_yOffset;
+extern line_t *line_head;
+extern line_t *line_tail;
+extern line_t *line_current;
 
-Offset *offset;
+extern Offset *offset;
 
 
 void line_init(void);
@@ -35,3 +35,5 @@ line_t *line_add(const char *text);
 line_t *line_addFile(void);
 void line_delete(enum line_delete_flag flag);
 void line_clean(void);
+
+#endif

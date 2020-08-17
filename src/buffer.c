@@ -7,6 +7,8 @@
 
 #include "buffer.h"
 
+buffer_t *buffer;
+
 void buffer_init(void)
 {
    buffer = (buffer_t *)malloc(sizeof(*buffer));

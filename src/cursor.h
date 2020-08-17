@@ -5,14 +5,17 @@
  *  This file contains a struct
  *  which contains the "real" cursor positions.
  */
-#pragma once
+#ifndef CURSOR_H
+#define CURSOR_H
 
 typedef struct {
     int cursX;
     int cursY;
 } Cursor;
 
-Cursor *cursor;
+extern Cursor *cursor;
 
 void cursor_init(void);
 void cursor_clean(void);
+
+#endif

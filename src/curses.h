@@ -2,7 +2,8 @@
  *  (C) 2020 Adam Hunyadvari
  *      <adesz@jss.hu>
  */
-#pragma once
+#ifndef CURSES_H
+#define CURSES_H
 
 #include <ncurses.h>
 
@@ -17,8 +18,8 @@ typedef struct {
     int width;
 } ADED_WINDOW;
 
-TerminalInfo *termInfo;
-ADED_WINDOW *main_window;
+extern TerminalInfo *termInfo;
+extern ADED_WINDOW *main_window;
 
 void curses_init(void);
 
@@ -29,3 +30,5 @@ void curses_windowResize(ADED_WINDOW *win, int height, int width);
 
 void curses_resize();
 void curses_clean(void);
+
+#endif

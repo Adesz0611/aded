@@ -11,7 +11,8 @@
  *  - Only use libncurses, one framework is enough
  *       
  */
-#pragma once
+#ifndef STATUSBAR_H
+#define STATUSBAR_H
 
 #include "curses.h"
 
@@ -25,8 +26,10 @@ typedef struct _Statusbar {
     enum statusbar_position_enum position;
 } Statusbar;
 
-Statusbar *statusbar;
+extern Statusbar *statusbar;
 
 void statusbar_init(enum statusbar_position_enum stbar_pos);
 void statusbar_display(void);
 void statusbar_clean(void);
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef DEBUG_H
+#define DEBUG_H
+
 #include <stdarg.h>
 
 #define DEBUG_FILE "aded.debug"
@@ -9,3 +12,5 @@
 #endif
 
 void debugf (const char *fmt, ...);
+
+#endif

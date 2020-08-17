@@ -10,6 +10,8 @@
 #include "buffer.h"
 #include "cursor.h"
 
+Statusbar *statusbar;
+
 void statusbar_init(enum statusbar_position_enum stbar_pos)
 {
     statusbar = (Statusbar *)malloc(sizeof(*statusbar));

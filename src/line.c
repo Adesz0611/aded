@@ -7,6 +7,12 @@
 #include "cursor.h"
 #include "curses.h"
 
+line_t *line_head;
+line_t *line_tail;
+line_t *line_current;
+
+Offset *offset;
+
 void line_init (void)
 {
     line_head = (line_t *)malloc(sizeof(*line_head));

@@ -16,6 +16,7 @@
 #include "line.h"
 #include "file.h"
 
+file_t *file;
 
 void file_init(void)
 {

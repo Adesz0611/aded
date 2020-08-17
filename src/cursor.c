@@ -7,6 +7,8 @@
 
 #include "cursor.h"
 
+Cursor *cursor;
+
 void cursor_init(void)
 {
     cursor = (Cursor *)malloc(sizeof(*cursor));

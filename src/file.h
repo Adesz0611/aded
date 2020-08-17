@@ -2,7 +2,9 @@
  *  (C) 2020 Adam Hunyadvari
  *      <adesz@jss.hu>
  */
-#pragma once
+#ifndef FILE_H
+#define FILE_H
+
 #include <stdbool.h>
 
 #include "defs.h"
@@ -16,10 +18,12 @@ typedef struct {
     bool fileExist;
 } file_t;
 
-file_t *file;
+extern file_t *file;
 
 void file_init(void);
 bool file_exist(const char *path);
 void file_save(void);
 void file_load(const char *path);
 void file_clean(void);
+
+#endif

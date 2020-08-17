@@ -1,4 +1,6 @@
-#pragma once
+#ifndef DEFS_H
+#define DEFS_H
+
 #define MAXLINE 4096
 #define MAX_FILENAME 256 // Changed from 64 bytes
 
@@ -15,3 +17,5 @@
 #define ALLOW_HOME_AND_END_KEY 1
 
 #define scpy(dst, src) strncpy((dst), (src), (sizeof(dst)) - 1)
+
+#endif

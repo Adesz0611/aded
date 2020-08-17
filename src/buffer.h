@@ -2,13 +2,16 @@
  *  (C) 2020 Adam Hunyadvari
  *      <adesz@jss.hu>
  */
-#pragma once
+#ifndef BUFFER_H
+#define BUFFER_H
+
 typedef struct {
     int cursX;
     int cursY;
 } buffer_t;
 
-buffer_t *buffer;
+extern buffer_t *buffer;
 
 void buffer_init(void);
 void buffer_clean(void);
+#endif
