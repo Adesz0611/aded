@@ -217,8 +217,7 @@ static void enter(void)
 
         display_scroll(main_window, FORWARD);
 
-        if(line_current->next != NULL)
-            display_line(main_window, line_current, main_window->height - 1, 0, main_window->width); // Display it, otherwise not
+        display_line(main_window, line_current, main_window->height - 1, 0, main_window->width); // Display it, otherwise not
     }
     else
     {
