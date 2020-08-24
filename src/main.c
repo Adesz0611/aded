@@ -31,7 +31,6 @@ static void destroy(void);
 
 int main (int argc, const char *argv[])
 {
-    atexit(destroy);
     setlocale(LC_ALL, "");
 
 #if __unix__
@@ -39,9 +38,6 @@ int main (int argc, const char *argv[])
     signal(SIGTERM, emergencyexit);
 #endif
 
-    // init
-    file_init();
-    line_init();
     
     if(argc > 1)
     {
@@ -58,6 +54,11 @@ int main (int argc, const char *argv[])
         }
         else
         {
+            // init
+            file_init();
+            line_init();
+
+
             scpy(file->filename, argv[1]);
  
             file->name_length = utf8_strlen(file->filename);
@@ -81,8 +82,15 @@ int main (int argc, const char *argv[])
     // If there is no argument
     else
     {
+        // init
+        file_init();
+        line_init();
+
         offset->line_yOffset = line_current = line_add(""); // First line
     }
+
+
+    atexit(destroy);
 
 
     curses_init();
