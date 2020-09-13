@@ -7,26 +7,35 @@
 
 #include <ncurses.h>
 
-typedef struct {
-    int height;
-    int width;
-} TerminalInfo;
+// Macros for stdscr's size
+#ifdef STDSCR_WIDTH
+#undef STDSCR_WIDTH
+#endif
 
-typedef struct {
-    WINDOW *window;
-    int height;
-    int width;
-} ADED_WINDOW;
+#ifdef STDSCR_HEIGHT
+#undef STDSCR_HEIGHT
+#endif
 
-extern TerminalInfo *termInfo;
-extern ADED_WINDOW *main_window;
+#define STDSCR_WIDTH    getmaxx(stdscr)
+#define STDSCR_HEIGHT   getmaxy(stdscr)
+//-------------------------
+
+// Macros for window's size
+#ifdef WINDOW_WIDTH
+#undef WINDOW_WIDTH
+#endif
+
+#ifdef WINDOW_HEIGHT
+#undef WINDOW_HEIGHT
+#endif
+
+#define WINDOW_WIDTH(win)   getmaxx(win)
+#define WINDOW_HEIGHT(win)  getmaxy(win)
+//-------------------------
+
+extern WINDOW *main_window;
 
 void curses_init(void);
-
-// Window stuffs
-ADED_WINDOW *curses_windowAdd(int height, int width, int startY, int startX);
-void curses_windowDelete(ADED_WINDOW *win);
-void curses_windowResize(ADED_WINDOW *win, int height, int width);
 
 void curses_resize();
 void curses_clean(void);

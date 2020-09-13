@@ -99,13 +99,13 @@ int main (int argc, const char *argv[])
     statusbar_init(STBAR_POS_BOTTOM);
 
     
-    display_buffer(main_window, offset->line_yOffset, 0, main_window->height);
+    display_buffer(main_window, offset->line_yOffset, 0, WINDOW_HEIGHT(main_window));
     statusbar_display();
     
     while(1)
     {
         statusbar_display();
-        wmove(main_window->window, cursor->cursY, cursor->cursX);
+        wmove(main_window, cursor->cursY, cursor->cursX);
         input();
     }
     

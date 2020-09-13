@@ -19,7 +19,8 @@ void statusbar_init(enum statusbar_position_enum stbar_pos)
 
     statusbar->position = stbar_pos;
 
-    statusbar->window = curses_windowAdd(1, termInfo->width, termInfo->height - 1, 0);
+    //statusbar->window = curses_windowAdd(1, termInfo->width, termInfo->height - 1, 0);
+    statusbar->window = newwin(1, getmaxx(stdscr), getmaxy(stdscr) - 1, 0);
 }
 
 void statusbar_display(void)
@@ -30,20 +31,21 @@ void statusbar_display(void)
     snprintf(pos, 63, "%d, %d ", buffer->cursY + 1, buffer->cursX + 1);
     pos_len = strlen(pos);
 
-    wattron(statusbar->window->window, A_REVERSE);
-    mvwprintw(statusbar->window->window, 0, 0, " %s", file->filename);
+    wattron(statusbar->window, A_REVERSE);
+    mvwprintw(statusbar->window, 0, 0, " %s", file->filename);
 
-    for(i = file->name_length + 1; i < statusbar->window->width - pos_len; i++)
-        mvwprintw(statusbar->window->window, 0, i, " ");
-    mvwprintw(statusbar->window->window, 0, i, "%s", pos);
+    for(i = file->name_length + 1; i < STATUSBAR_WINDOW_WIDTH - pos_len; i++)
+        mvwprintw(statusbar->window, 0, i, " ");
+    mvwprintw(statusbar->window, 0, i, "%s", pos);
 
-    wattroff(statusbar->window->window, A_REVERSE);
+    wattroff(statusbar->window, A_REVERSE);
 
-    wrefresh(statusbar->window->window);
+    wrefresh(statusbar->window);
 }
 
 void statusbar_clean(void)
 {
-    free(statusbar->window);
+    //free(statusbar->window);
+    delwin(statusbar->window);
     free(statusbar);
 }

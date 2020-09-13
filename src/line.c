@@ -94,9 +94,9 @@ void line_delete(enum line_delete_flag flag)
 
         /* ------------------------------ */
 
-        if(main_window->width < (int)line_current->size - 1)
+        if(WINDOW_WIDTH(main_window) < (int)line_current->size - 1)
         {
-            cursor->cursX = main_window->width - XSCROLL_VALUE;
+            cursor->cursX = WINDOW_WIDTH(main_window) - XSCROLL_VALUE;
             offset->xOffset = line_current->size - XSCROLL_VALUE - 1;
         }
         else

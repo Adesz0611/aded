@@ -10,8 +10,7 @@
 #include "cursor.h"
 #include "display.h"
 
-TerminalInfo *termInfo;
-ADED_WINDOW *main_window;
+WINDOW *main_window;
 
 void curses_init(void)
 {
@@ -19,48 +18,13 @@ void curses_init(void)
     initscr();
     cbreak();
     noecho();
-    
-    // Allocate memory for the terminal info struct
-    termInfo = (TerminalInfo *)malloc(sizeof(*termInfo));
-    memset(termInfo, 0, sizeof(*termInfo));
-
-    // Get the terminal size
-    getmaxyx(stdscr, termInfo->height, termInfo->width);
-    
-    // Create the main window
-    main_window = curses_windowAdd(termInfo->height - 1, termInfo->width, 0, 0);
+   
+    // Initialize main window
+    main_window = newwin(STDSCR_HEIGHT - 1, STDSCR_WIDTH, 0, 0);
+    keypad(main_window, true);
 
     // Start debugging
     DEBUGF("Started\n");
-}
-
-ADED_WINDOW *curses_windowAdd(int height, int width, int startY, int startX)
-{
-    ADED_WINDOW *tmp;
-
-    tmp = (ADED_WINDOW *)malloc(sizeof(*tmp));
-    memset(tmp, 0, sizeof(*tmp));
-
-    tmp->window = newwin(height, width, startY, startX);
-    tmp->height = height;
-    tmp->width = width;
-
-    keypad(tmp->window, true);
-
-    return tmp;
-}
-
-void curses_windowDelete(ADED_WINDOW *win)
-{
-    delwin(win->window); // NCURSES' function
-    free(win);
-}
-
-void curses_windowResize(ADED_WINDOW *win, int height, int width)
-{
-    wresize(win->window, height, width);
-    win->height = height;
-    win->width  = width;
 }
 
 void curses_resize()
@@ -69,47 +33,50 @@ void curses_resize()
     // followed by a refresh() to properly update curses
     endwin();
     refresh();
+    clear();
 
-    // Get the terminal's new size
-    getmaxyx(stdscr, termInfo->height, termInfo->width);
-   
     // Resize the main window
-    curses_windowResize(main_window, termInfo->height - 1, termInfo->width);
-    
-    // Resize the statusbar
-    wresize(statusbar->window->window, 1, termInfo->width);
-    statusbar->window->width = termInfo->width;
-    mvwin(statusbar->window->window, termInfo->height - 1, 0);
+    wresize(main_window, STDSCR_HEIGHT - 1, STDSCR_WIDTH);
+    wnoutrefresh(main_window);
 
-    DEBUGF("termInfo->height (y) = %d\n", termInfo->height);
-    DEBUGF("termInfo->width (x) = %d\n\n", termInfo->width);
+    // Resize the statusbar
+    //wresize(statusbar->window, 1, STDSCR_WIDTH);
+    mvwin(statusbar->window, STDSCR_HEIGHT - 1, 0);
+    wnoutrefresh(statusbar->window);
+
+    DEBUGF("Standard screen's height (y) = %d\n", STDSCR_HEIGHT);
+    DEBUGF("Standard screen's width (x) = %d\n\n", STDSCR_WIDTH);
 
     // Check vertically
-    if(offset->line_yOffset->next != NULL && cursor->cursY + 1 > main_window->height)
+    if(cursor->cursY + 1 > WINDOW_HEIGHT(main_window))
     {
-        offset->line_yOffset = offset->line_yOffset->next;
-        cursor->cursY--;
+        int tmp_diff = cursor->cursY + 1 - WINDOW_HEIGHT(main_window);
+        for(int i = 0; i < tmp_diff; i++)
+        {
+            offset->line_yOffset = offset->line_yOffset->next;
+        }
+        cursor->cursY = WINDOW_HEIGHT(main_window) - 1;
     }
 
 
     // Check horizontally
-    if(line_current->buffer[buffer->cursX - XSCROLL_VALUE] != '\0' && cursor->cursX + 1 > main_window->width)
+    // FIXME:
+    if(line_current->buffer[buffer->cursX - XSCROLL_VALUE] != '\0' && cursor->cursX + 1 > WINDOW_WIDTH(main_window))
     {
         offset->xOffset += XSCROLL_VALUE;
         cursor->cursX -= XSCROLL_VALUE;
     }
-    else if(line_current->buffer[buffer->cursX - 1] != '\0' && cursor->cursX + 1 > main_window->width)
+    else if(line_current->buffer[buffer->cursX - 1] != '\0' && cursor->cursX + 1 > WINDOW_WIDTH(main_window))
     {
         offset->xOffset++;
         cursor->cursX--;
     }
 
-    display_buffer(main_window, offset->line_yOffset, 0, main_window->height);
+    display_buffer(main_window, offset->line_yOffset, 0, WINDOW_HEIGHT(main_window));
 }
 
 void curses_clean(void)
 {
-    free(termInfo);
-    curses_windowDelete(main_window);
+    delwin(main_window);
     endwin();
 }

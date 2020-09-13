@@ -16,13 +16,17 @@
 
 #include "curses.h"
 
+// Macros for statusbar's size
+#define STATUSBAR_WINDOW_WIDTH  getmaxx(statusbar->window)
+#define STATUSBAR_WINDOW_HEIGHT getmaxy(statusbar->window)
+
 enum statusbar_position_enum {
     STBAR_POS_BOTTOM = 0,
     STBAR_POS_TOP
 };
 
 typedef struct _Statusbar {
-    ADED_WINDOW *window;
+    WINDOW *window;
     enum statusbar_position_enum position;
 } Statusbar;
 

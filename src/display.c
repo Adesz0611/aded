@@ -10,37 +10,37 @@
 #include "file.h"
 #include "defs.h"
 
-void display_buffer(ADED_WINDOW *win, line_t *line, int y, int nrow)
+void display_buffer(WINDOW *win, line_t *line, int y, int nrow)
 {
     int i;
     line_t *tmp = line;
     
     for(i = y; i < y + nrow; i++)
     {
-        display_blankRow(win, i, 0, win->width);
+        display_blankRow(win, i, 0, WINDOW_WIDTH(win));
     }
 
     for(i = y; i < y + nrow && tmp != NULL; i++, tmp = tmp->next)
     {
-        display_line(win, tmp, i, 0, win->width);
+        display_line(win, tmp, i, 0, WINDOW_WIDTH(win));
     }
 }
 
 /*-- Blank--*/
 
 /*  This function puts n spaces to the terminal */
-void display_blankRow(ADED_WINDOW *win, int y, int x, int n)
+void display_blankRow(WINDOW *win, int y, int x, int n)
 {
-    wmove(win->window, y, x);
+    wmove(win, y, x);
 
     for(; n > 0; n--)
-        waddch(win->window, ' ');
+        waddch(win, ' ');
 }
 
 /*-- Draw --*/
 
 /* Display n characters of a line*/
-void display_line(ADED_WINDOW *win, line_t *line, int y, int x, int n)
+void display_line(WINDOW *win, line_t *line, int y, int x, int n)
 {
     /*
     for(int i = x; i < x + n && line->buffer[i] != '\0'; i++)
@@ -53,27 +53,27 @@ void display_line(ADED_WINDOW *win, line_t *line, int y, int x, int n)
                 mvwprintw(win->window, y, i, "%c", line->buffer[i + offset->xOffset]);
     }
     */
-    wmove(win->window, y, x);
-    waddnstr(win->window, &line->buffer[x + offset->xOffset], n);
+    wmove(win, y, x);
+    waddnstr(win, &line->buffer[x + offset->xOffset], n);
 #if DISPLAY_PILCROW_AS_NEWLINE
     if(line->buffer[line->size - 1] == '\n')
-        waddstr(win->window, "¶");
+        waddstr(win, "¶");
 #endif
 }
 
-void display_scroll(ADED_WINDOW *win, enum scroll_direction direction)
+void display_scroll(WINDOW *win, enum scroll_direction direction)
 {
-    scrollok(win->window, TRUE); 
-    wscrl(win->window, (direction == FORWARD) ? 1 : -1);
-    scrollok(win->window, FALSE);
+    scrollok(win, TRUE); 
+    wscrl(win, (direction == FORWARD) ? 1 : -1);
+    scrollok(win, FALSE);
 
     if(direction == FORWARD)
     {
-        display_blankRow(win, win->height, 0, win->width);
+        display_blankRow(win, WINDOW_HEIGHT(win), 0, WINDOW_WIDTH(win));
     }
 
     else
     {
-        display_blankRow(win, 0, 0, win->width); 
+        display_blankRow(win, 0, 0, WINDOW_WIDTH(win)); 
     }
 }
