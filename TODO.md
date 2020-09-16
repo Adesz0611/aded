@@ -1,5 +1,6 @@
 TODO:
 =====
+- implement PageUp and PageDown
 - don't need to refresh statusbar every time
 
 DONE:
@@ -21,4 +22,5 @@ DONE:
 - fix horizontal resize
 - implement blank-row function, blank-statusbar function etc.
 - Optimaze cursor movement (Don't draw the hole screen when move around with cursor)
- fix HOME and END redraw
+- fix HOME and END redraw
+- fix vertical resize

@@ -40,7 +40,6 @@ void curses_resize()
     wnoutrefresh(main_window);
 
     // Resize the statusbar
-    //wresize(statusbar->window, 1, STDSCR_WIDTH);
     mvwin(statusbar->window, STDSCR_HEIGHT - 1, 0);
     wnoutrefresh(statusbar->window);
 
@@ -60,16 +59,10 @@ void curses_resize()
 
 
     // Check horizontally
-    // FIXME:
-    if(line_current->buffer[buffer->cursX - XSCROLL_VALUE] != '\0' && cursor->cursX + 1 > WINDOW_WIDTH(main_window))
+    if(cursor->cursX + 1 > WINDOW_WIDTH(main_window))
     {
-        offset->xOffset += XSCROLL_VALUE;
-        cursor->cursX -= XSCROLL_VALUE;
-    }
-    else if(line_current->buffer[buffer->cursX - 1] != '\0' && cursor->cursX + 1 > WINDOW_WIDTH(main_window))
-    {
-        offset->xOffset++;
-        cursor->cursX--;
+        offset->xOffset = buffer->cursX - WINDOW_WIDTH(main_window) + XSCROLL_VALUE;
+        cursor->cursX = WINDOW_WIDTH(main_window) - XSCROLL_VALUE;
     }
 
     display_buffer(main_window, offset->line_yOffset, 0, WINDOW_HEIGHT(main_window));
