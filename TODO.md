@@ -24,3 +24,5 @@ DONE:
 - Optimaze cursor movement (Don't draw the hole screen when move around with cursor)
 - fix HOME and END redraw
 - fix vertical resize
+- Fix move down
+- Fix move up

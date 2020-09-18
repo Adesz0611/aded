@@ -1,3 +1,7 @@
+/*
+ *  (C) 2020 Adam Hunyadvari
+ *      <adesz@jss.hu>
+ */
 #include <stdlib.h>
 #include <string.h>
 
@@ -38,7 +42,7 @@ line_t *line_add(const char *text)
     strncpy(tmp->buffer, text, MAXLINE - 1);
     tmp->size = strlen(text) + 1;
 
-    tmp->buffer[0] = '\n';
+    tmp->buffer[tmp->size - 1] = '\n';
 
 
     if(line_current == line_tail)

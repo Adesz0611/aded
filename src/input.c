@@ -234,13 +234,13 @@ static void enter(void)
             display_line(main_window, line_current, cursor->cursY, 0, WINDOW_HEIGHT(main_window));
         }
     }
-    
+
     line_current->prev->size -= line_current->size - 1;
 
     bool shouldRedraw = (offset->xOffset) ? true : false;
     buffer->cursY++;
     offset->xOffset = 0;
-    
+
     if(shouldRedraw)
         display_buffer(main_window, offset->line_yOffset, 0, WINDOW_HEIGHT(main_window));
 
@@ -279,24 +279,23 @@ static void move_up(void)
 {
     if(line_current->prev != line_head)
     {
-        if(cursor->cursY < 1)
+        if(cursor->cursY < getbegy(main_window) + 1)
         {
             offset->line_yOffset = offset->line_yOffset->prev;
-
-            if(offset->line_yOffset != line_head)
-            {
-                display_scroll(main_window, BACKWARD);
-                display_line(main_window, offset->line_yOffset, 0, 0, WINDOW_WIDTH(main_window)); // Display it, otherwise not
-            }
+            display_scroll(main_window, BACKWARD);
+            display_line(main_window, offset->line_yOffset, 0, 0, WINDOW_WIDTH(main_window)); // Display it, otherwise not
         }
         else
             cursor->cursY--;
 
-        buffer->cursY--;
         line_current = line_current->prev;
-        
-        if(buffer->cursX > (int)line_current->size - 1)
+        buffer->cursY--;
+       
+
+        if((int)line_current->size - 1 < buffer->cursX)
         {
+            buffer->cursX = line_current->size - 1;
+            
             if(WINDOW_WIDTH(main_window) < (int)line_current->size - 1)
             {
                 if(offset->xOffset < line_current->size - 1)
@@ -304,18 +303,19 @@ static void move_up(void)
                 else
                 {
                     cursor->cursX = WINDOW_WIDTH(main_window) - XSCROLL_VALUE;
-                    offset->xOffset = line_current->size - XSCROLL_VALUE - 1;
+                    offset->xOffset = buffer->cursX - WINDOW_WIDTH(main_window) +  XSCROLL_VALUE;
+                    display_buffer(main_window, offset->line_yOffset, 0, WINDOW_HEIGHT(main_window));
                 }
             }
             else
             {
                 cursor->cursX = line_current->size - 1;
                 offset->xOffset = 0;
+                display_buffer(main_window, offset->line_yOffset, 0, WINDOW_HEIGHT(main_window));
             }
-
-            buffer->cursX = line_current->size - 1;
         }
-        
+        else
+            return;
     }
 }
 
@@ -330,34 +330,39 @@ static void move_down(void)
         {
             offset->line_yOffset = offset->line_yOffset->next;
             display_scroll(main_window, FORWARD);
-            if(line_current->next != NULL)
-                display_line(main_window, line_current->next, WINDOW_HEIGHT(main_window) - 1, 0, WINDOW_WIDTH(main_window)); // Display it, otherwise not
+            display_line(main_window, line_current->next, WINDOW_HEIGHT(main_window) - 1, 0, WINDOW_WIDTH(main_window)); // Display it, otherwise not
         }
         else
             cursor->cursY++;
 
-        buffer->cursY++;
         line_current = line_current->next;
-        if(buffer->cursX > (int)line_current->size - 1)
+        buffer->cursY++;
+
+
+        if(line_current->size - 1 < buffer->cursX)
         {
-            if(WINDOW_WIDTH(main_window) < (int)line_current->size - 1)
+            buffer->cursX = line_current->size - 1;
+            
+            if(WINDOW_WIDTH(main_window) < line_current->size - 1)
             {
                 if(offset->xOffset < line_current->size - 1)
-                    cursor->cursX = (line_current->size - 1) - offset->xOffset;
+                    cursor->cursX = line_current->size - 1 - offset->xOffset;
                 else
                 {
                     cursor->cursX = WINDOW_WIDTH(main_window) - XSCROLL_VALUE;
-                    offset->xOffset = line_current->size - XSCROLL_VALUE - 1;
+                    offset->xOffset = buffer->cursX - WINDOW_WIDTH(main_window) + XSCROLL_VALUE; //You can use line_current->size - 1 instead of buffer->cursX
+                    display_buffer(main_window, offset->line_yOffset, 0, WINDOW_HEIGHT(main_window));
                 }
             }
             else
             {
                 cursor->cursX = line_current->size - 1;
                 offset->xOffset = 0;
+                display_buffer(main_window, offset->line_yOffset, 0, WINDOW_HEIGHT(main_window));
             }
-
-            buffer->cursX = line_current->size - 1;
         }
+        else
+            return;
     }
 }
 

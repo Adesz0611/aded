@@ -20,6 +20,7 @@
 #include "statusbar.h"
 #include "cursor.h"
 #include "utf8.h"
+#include "debug.h"
 
 #if __unix__
 #include <signal.h>
@@ -100,7 +101,6 @@ int main (int argc, const char *argv[])
 
     
     display_buffer(main_window, offset->line_yOffset, 0, WINDOW_HEIGHT(main_window));
-    statusbar_display();
     
     while(1)
     {
