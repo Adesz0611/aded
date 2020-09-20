@@ -1,6 +1,6 @@
 TODO:
 =====
-- implement PageUp and PageDown
+- implement PageUp and PageDown (FIX if the buffer cursX is bigger than the scrolled line size)
 - don't need to refresh statusbar every time
 
 DONE:

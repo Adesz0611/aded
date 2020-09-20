@@ -8,10 +8,12 @@
 typedef struct {
     int cursX;
     int cursY;
+    unsigned numlines; // Number of lines in the buffer
 } buffer_t;
 
 extern buffer_t *buffer;
 
-void buffer_init(void);
-void buffer_clean(void);
+void buffer_init();
+buffer_t *buffer_add();
+void buffer_clean(buffer_t *p_buf);
 #endif

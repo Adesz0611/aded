@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "buffer.h"
+
 enum line_delete_flag {
     BY_DEFAULT = 0,
     BY_BACKSPACE,
@@ -31,9 +33,9 @@ extern Offset *offset;
 
 
 void line_init(void);
-line_t *line_add(const char *text);
-line_t *line_addFile(void);
-void line_delete(enum line_delete_flag flag);
+line_t *line_add(const char *text, buffer_t *p_buffer);
+line_t *line_addFile(buffer_t *p_buffer);
+void line_delete(enum line_delete_flag flag, buffer_t *p_buffer);
 void line_clean(void);
 
 #endif

@@ -31,7 +31,7 @@ void line_init (void)
     line_current = line_head;
 }
 
-line_t *line_add(const char *text)
+line_t *line_add(const char *text, buffer_t *p_buffer)
 {
     line_t *tmp = (line_t *)malloc(sizeof(*tmp));
     memset(tmp, 0, sizeof(*tmp));
@@ -63,11 +63,12 @@ line_t *line_add(const char *text)
     }
      
     line_current = tmp;
+    p_buffer->numlines++;
 
     return tmp;
 }
 
-line_t *line_addFile(void)
+line_t *line_addFile(buffer_t *p_buffer)
 {
     line_t *tmp = (line_t *)malloc(sizeof(*tmp));
     memset(tmp, 0, sizeof(*tmp));
@@ -80,13 +81,15 @@ line_t *line_addFile(void)
     line_tail->next = tmp;
     tmp->prev = line_tail;
     line_tail = tmp;
+    
+    p_buffer->numlines++;
 
     return tmp;
 }
 
 /* Line delete stupid solution*/
 
-void line_delete(enum line_delete_flag flag)
+void line_delete(enum line_delete_flag flag, buffer_t *p_buffer)
 {
     // Pointer to the line that will be deleted
     line_t *tmp;
@@ -141,6 +144,7 @@ void line_delete(enum line_delete_flag flag)
 
     free(tmp->buffer);
     free(tmp);
+    p_buffer->numlines--;
 
     if(flag != BY_DELETE)
     {   

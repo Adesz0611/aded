@@ -55,8 +55,13 @@ void input(void)
         case KEY_BACKSPACE:
             if(buffer->cursX > 0)
             {
-                memmove(&line_current->buffer[buffer->cursX - 1], &line_current->buffer[buffer->cursX], line_current->size + 1 - buffer->cursX);
-                line_current->buffer[line_current->size] = '\0';
+
+                //memmove(&line_current->buffer[buffer->cursX - 1], &line_current->buffer[buffer->cursX], line_current->size + 1 - buffer->cursX);
+                //line_current->buffer[line_current->size] = '\0';
+
+                
+                memmove(&line_current->buffer[buffer->cursX - 1], &line_current->buffer[buffer->cursX], line_current->size - buffer->cursX);
+                line_current->buffer[line_current->size - 1] = '\0';
 
                 if(cursor->cursX < 1)
                 {
@@ -71,14 +76,14 @@ void input(void)
                         cursor->cursX += XSCROLL_VALUE;
                     }
 
-                    display_buffer(main_window, offset->line_yOffset, 0, WINDOW_HEIGHT(main_window));
+                    full_redraw(main_window);
                 }
                 else
                 {
                     if(line_current->size - 1 - offset->xOffset > WINDOW_WIDTH(main_window))
                     {
-                        display_blankRow(main_window, cursor->cursY, cursor->cursX, WINDOW_WIDTH(main_window) - cursor->cursX);
-                        display_line(main_window, line_current, cursor->cursY, cursor->cursX, WINDOW_WIDTH(main_window) - cursor->cursX);
+                        display_blankRow(main_window, cursor->cursY, cursor->cursX - 1, WINDOW_WIDTH(main_window) - cursor->cursX + 1);
+                        display_line(main_window, line_current, cursor->cursY, cursor->cursX - 1, WINDOW_WIDTH(main_window) - cursor->cursX + 1);
                     }
                     else
                     {
@@ -95,7 +100,7 @@ void input(void)
             {
                 if(line_current->prev != line_head)
                 { 
-                    line_delete(BY_BACKSPACE);
+                    line_delete(BY_BACKSPACE, buffer);
                     display_buffer(main_window, line_current, cursor->cursY, WINDOW_HEIGHT(main_window) - cursor->cursY);
                 }
             }
@@ -123,7 +128,7 @@ void input(void)
             }
             else if(line_current->next != NULL)
             {
-                line_delete(BY_DELETE);
+                line_delete(BY_DELETE, buffer);
                 
                 // If statements for drawing
                 if(line_current->size - 1 - offset->xOffset > WINDOW_WIDTH(main_window))
@@ -138,6 +143,16 @@ void input(void)
                 }
                 display_buffer(main_window, line_current, cursor->cursY, WINDOW_HEIGHT(main_window) - cursor->cursY);
             }
+            break;
+        case KEY_NPAGE:
+            display_page_down(main_window);
+            //display_buffer(main_window, offset->line_yOffset, , WINDOW_HEIGHT(main_window) - cursor->cursY);
+            full_redraw(main_window);
+            break;
+        case KEY_PPAGE:
+            display_page_up(main_window);
+            //display_buffer(main_window, offset->line_yOffset, cursor->cursY, WINDOW_HEIGHT(main_window) - cursor->cursY);
+            full_redraw(main_window);
             break;
         case KEY_TAB:
             tab();
@@ -199,7 +214,7 @@ void input(void)
 
 static void enter(void)
 {
-    line_add("");
+    line_add("", buffer);
     strncpy(&line_current->buffer[0], &line_current->prev->buffer[buffer->cursX], line_current->prev->size - 1 - buffer->cursX); // '\n' is not element of size!!!
     
     // Delete all of bytes after cursor (also '\n')
@@ -262,16 +277,18 @@ static void move_home(void)
 
 static void move_end(void)
 {
+    buffer->cursX = line_current->size - 1;
+
     if(line_current->size - 1 - offset->xOffset >= WINDOW_WIDTH(main_window))
     {
         cursor->cursX = WINDOW_WIDTH(main_window) - XSCROLL_VALUE;
-        offset->xOffset = line_current->size - XSCROLL_VALUE - 1;
+        //offset->xOffset = line_current->size - XSCROLL_VALUE - 1;
+        offset->xOffset = buffer->cursX - WINDOW_WIDTH(main_window) + XSCROLL_VALUE;
 
         display_buffer(main_window, offset->line_yOffset, 0, WINDOW_HEIGHT(main_window));
     }
-
-    cursor->cursX = line_current->size - 1 - offset->xOffset;
-    buffer->cursX = line_current->size - 1;
+    else
+        cursor->cursX = line_current->size - 1 - offset->xOffset;
 }
 #endif // ALLOW_HOME_AND_END_KEY
 
@@ -411,17 +428,16 @@ static void move_left(void)
                 buffer->cursY--;
             }
             
-            
+            buffer->cursX = line_current->size - 1;
             if((int)line_current->size - 1 >= WINDOW_WIDTH(main_window))
             {
                 cursor->cursX = WINDOW_WIDTH(main_window) - XSCROLL_VALUE;
-                offset->xOffset = line_current->size - XSCROLL_VALUE - 1;
+                offset->xOffset = buffer->cursX - WINDOW_WIDTH(main_window) + XSCROLL_VALUE; 
+                //line_current->size - XSCROLL_VALUE - 1;
                 display_buffer(main_window, offset->line_yOffset, 0, WINDOW_HEIGHT(main_window));
             }
             else
                 cursor->cursX = line_current->size - 1;
-
-            buffer->cursX = line_current->size - 1;
         }
     }
 }
@@ -484,7 +500,7 @@ static void tab(void)
     for(int i = buffer->cursX; i < buffer->cursX + tmp_tabsize; i++)
         line_current->buffer[i] = ' ';
     
-    buffer->cursX += tmp_tabsize;
+
     line_current->size += tmp_tabsize;
 
     if (cursor->cursX + tmp_tabsize >= WINDOW_WIDTH(main_window))
@@ -501,14 +517,16 @@ static void tab(void)
         if(line_current->size - 1 - offset->xOffset > WINDOW_WIDTH(main_window))
         {
             display_blankRow(main_window, cursor->cursY, cursor->cursX, WINDOW_WIDTH(main_window) - cursor->cursX);
-            display_line(main_window, line_current, cursor->cursY, cursor->cursX + tmp_tabsize, WINDOW_WIDTH(main_window) - cursor->cursX + tmp_tabsize);
+            display_line(main_window, line_current, cursor->cursY, cursor->cursX, WINDOW_WIDTH(main_window) - cursor->cursX);
         }
         else
         {
             display_blankRow(main_window, cursor->cursY, cursor->cursX, line_current->size - 1 - buffer->cursX);
-            display_line(main_window, line_current, cursor->cursY, cursor->cursX + tmp_tabsize, line_current->size - 1 - buffer->cursX + tmp_tabsize);
+            display_line(main_window, line_current, cursor->cursY, cursor->cursX, line_current->size - 1 - buffer->cursX);
         }
 
         cursor->cursX += tmp_tabsize;
     }
+
+    buffer->cursX += tmp_tabsize;
 }

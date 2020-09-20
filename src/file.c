@@ -84,7 +84,7 @@ void file_load(const char *path)
         cur_s++;
         if(c == '\n' && (long int)cur_s != tmp_size)
         {
-            tmp_line = line_addFile();
+            tmp_line = line_addFile(buffer);
             i = 0;
         }
     }

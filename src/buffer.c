@@ -9,14 +9,22 @@
 
 buffer_t *buffer;
 
-void buffer_init(void)
+void buffer_init()
 {
-   buffer = (buffer_t *)malloc(sizeof(*buffer));
-   memset(buffer, 0, sizeof(*buffer));
-   buffer->cursX = buffer->cursY = 0;
+    buffer = buffer_add();
 }
 
-void buffer_clean(void)
+buffer_t *buffer_add()
 {
-    free(buffer);
+    buffer_t *p_buf = (buffer_t *)malloc(sizeof(*p_buf));
+    memset(p_buf, 0, sizeof(*p_buf));
+    p_buf->cursX = p_buf->cursY = 0;
+    p_buf->numlines = 0;
+
+    return p_buf;
+}
+
+void buffer_clean(buffer_t *p_buf)
+{
+    free(p_buf);
 }

@@ -58,6 +58,7 @@ int main (int argc, const char *argv[])
             // init
             file_init();
             line_init();
+            buffer_init();
 
 
             scpy(file->filename, argv[1]);
@@ -68,13 +69,13 @@ int main (int argc, const char *argv[])
             // Check the file is exist or not
             if(file_exist(file->filename))
             {
-                offset->line_yOffset = line_current = line_addFile(); // First line
+                offset->line_yOffset = line_current = line_addFile(buffer); // First line
                 file->fileExist = true;
                 file_load(file->filename);
             }
             else
             {
-                offset->line_yOffset = line_add(""); // First line
+                offset->line_yOffset = line_add("", buffer); // First line
                 file->fileExist = false;
             }
         }
@@ -86,8 +87,9 @@ int main (int argc, const char *argv[])
         // init
         file_init();
         line_init();
+        buffer_init();
 
-        offset->line_yOffset = line_current = line_add(""); // First line
+        offset->line_yOffset = line_current = line_add("", buffer); // First line
     }
 
 
@@ -96,7 +98,6 @@ int main (int argc, const char *argv[])
 
     curses_init();
     cursor_init();
-    buffer_init();
     statusbar_init(STBAR_POS_BOTTOM);
 
     
@@ -106,6 +107,7 @@ int main (int argc, const char *argv[])
     {
         statusbar_display();
         wmove(main_window, cursor->cursY, cursor->cursX);
+        DEBUGF("%d\n", buffer->numlines);
         input();
     }
     
@@ -136,7 +138,7 @@ static void destroy(void)
     // Clean up everything
     curses_clean();
     line_clean();
-    buffer_clean();
+    buffer_clean(buffer);
     cursor_clean();
     file_clean();
     statusbar_clean();
