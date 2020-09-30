@@ -146,13 +146,9 @@ void input(void)
             break;
         case KEY_NPAGE:
             display_page_down(main_window);
-            //display_buffer(main_window, offset->line_yOffset, , WINDOW_HEIGHT(main_window) - cursor->cursY);
-            full_redraw(main_window);
             break;
         case KEY_PPAGE:
             display_page_up(main_window);
-            //display_buffer(main_window, offset->line_yOffset, cursor->cursY, WINDOW_HEIGHT(main_window) - cursor->cursY);
-            full_redraw(main_window);
             break;
         case KEY_TAB:
             tab();
@@ -308,31 +304,7 @@ static void move_up(void)
         line_current = line_current->prev;
         buffer->cursY--;
        
-
-        if((int)line_current->size - 1 < buffer->cursX)
-        {
-            buffer->cursX = line_current->size - 1;
-            
-            if(WINDOW_WIDTH(main_window) < (int)line_current->size - 1)
-            {
-                if(offset->xOffset < line_current->size - 1)
-                    cursor->cursX = (line_current->size - 1) - offset->xOffset;
-                else
-                {
-                    cursor->cursX = WINDOW_WIDTH(main_window) - XSCROLL_VALUE;
-                    offset->xOffset = buffer->cursX - WINDOW_WIDTH(main_window) +  XSCROLL_VALUE;
-                    display_buffer(main_window, offset->line_yOffset, 0, WINDOW_HEIGHT(main_window));
-                }
-            }
-            else
-            {
-                cursor->cursX = line_current->size - 1;
-                offset->xOffset = 0;
-                display_buffer(main_window, offset->line_yOffset, 0, WINDOW_HEIGHT(main_window));
-            }
-        }
-        else
-            return;
+        display_position_cursor_horizontally(main_window, buffer, true);
     }
 }
 
@@ -355,31 +327,7 @@ static void move_down(void)
         line_current = line_current->next;
         buffer->cursY++;
 
-
-        if(line_current->size - 1 < buffer->cursX)
-        {
-            buffer->cursX = line_current->size - 1;
-            
-            if(WINDOW_WIDTH(main_window) < line_current->size - 1)
-            {
-                if(offset->xOffset < line_current->size - 1)
-                    cursor->cursX = line_current->size - 1 - offset->xOffset;
-                else
-                {
-                    cursor->cursX = WINDOW_WIDTH(main_window) - XSCROLL_VALUE;
-                    offset->xOffset = buffer->cursX - WINDOW_WIDTH(main_window) + XSCROLL_VALUE; //You can use line_current->size - 1 instead of buffer->cursX
-                    display_buffer(main_window, offset->line_yOffset, 0, WINDOW_HEIGHT(main_window));
-                }
-            }
-            else
-            {
-                cursor->cursX = line_current->size - 1;
-                offset->xOffset = 0;
-                display_buffer(main_window, offset->line_yOffset, 0, WINDOW_HEIGHT(main_window));
-            }
-        }
-        else
-            return;
+        display_position_cursor_horizontally(main_window, buffer, true);
     }
 }
 

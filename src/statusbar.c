@@ -28,7 +28,7 @@ void statusbar_display(void)
     int i, pos_len;
     char pos[64];
 
-    snprintf(pos, 63, "%d, %d ", buffer->cursY + 1, buffer->cursX + 1);
+    snprintf(pos, 63, "%ld, %ld ", buffer->cursY + 1, buffer->cursX + 1);
     pos_len = strlen(pos);
 
     wattron(statusbar->window, A_REVERSE);

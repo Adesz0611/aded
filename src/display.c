@@ -61,6 +61,13 @@ void display_line(WINDOW *win, line_t *line, int y, int x, int n)
     if(line->buffer[line->size - 1] == '\n')
         waddstr(win, "¶");
 #endif
+    // TODO:
+/*
+    for(int i = 0; i < n && line->buffer[i] != NULL; i++)
+    {
+
+    }
+*/
 }
 
 void display_scroll(WINDOW *win, enum scroll_direction direction)
@@ -82,23 +89,35 @@ void display_scroll(WINDOW *win, enum scroll_direction direction)
 
 void display_onepage(WINDOW *win, enum scroll_direction direction)
 {
-    // FIXME:
     if(direction == FORWARD)
     {
         line_t *tmp;
         int i = 0;
         for(i = 0, tmp = line_tail; i < WINDOW_HEIGHT(win) - 1 && tmp != NULL; i++, tmp = tmp->prev);
-        for(int i = 0; i < ONEPAGE_VALUE && offset->line_yOffset != tmp && line_current != line_tail; i++)
+        if(tmp != offset->line_yOffset)
         {
-            offset->line_yOffset = offset->line_yOffset->next;
-            line_current = line_current->next;
-            buffer->cursY++;
+            for(int i = 0; i < ONEPAGE_VALUE && offset->line_yOffset != tmp && line_current != line_tail; i++)
+            {
+                offset->line_yOffset = offset->line_yOffset->next;
+                line_current = line_current->next;
+                buffer->cursY++;
+
+            }
+
+            display_position_cursor_horizontally(main_window, buffer, false);
+            full_redraw(win);
+        }
+        else
+        {
+            buffer->cursY = buffer->numlines - 1;
+            cursor->cursY = WINDOW_HEIGHT(win) - 1;
+            line_current = line_tail;
         }
     }
     else
     {
         // First check we should display a page up or not
-        // If we are int the beginning of the buffer we don't have to
+        // If we are in the beginning of the buffer we don't have to
         if(buffer->cursY > 0)
         {
             if(offset->line_yOffset != line_head->next)
@@ -109,6 +128,10 @@ void display_onepage(WINDOW *win, enum scroll_direction direction)
                     line_current = line_current->prev;
                     buffer->cursY--;
                 }
+
+                display_position_cursor_horizontally(main_window, buffer, false);
+
+                full_redraw(win);
             }
             else
             {
@@ -116,6 +139,35 @@ void display_onepage(WINDOW *win, enum scroll_direction direction)
                 buffer->cursY = 0;
                 line_current = line_head->next;
             }
+        }
+    }
+}
+
+// position the cursor horizantally and if needed redraw the screen
+void display_position_cursor_horizontally(WINDOW *win, buffer_t *p_buffer, bool shouldRedraw)
+{
+    if(line_current->size - 1 < p_buffer->cursX)
+    {
+        p_buffer->cursX = line_current->size - 1;
+
+        if(WINDOW_WIDTH(win) < line_current->size - 1)
+        {
+            if(offset->xOffset < line_current->size - 1)
+                cursor->cursX = line_current->size - 1 - offset->xOffset;
+            else
+            {
+                cursor->cursX = WINDOW_WIDTH(win) - XSCROLL_VALUE;
+                offset->xOffset = p_buffer->cursX - WINDOW_WIDTH(win) + XSCROLL_VALUE; //You can use line_current->size - 1 instead of buffer->cursX
+                if(shouldRedraw)
+                    full_redraw(win);
+            }
+        }
+        else
+        {
+            cursor->cursX = line_current->size - 1;
+            offset->xOffset = 0;
+            if(shouldRedraw)
+                full_redraw(win);
         }
     }
 }

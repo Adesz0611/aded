@@ -30,4 +30,6 @@ void display_scroll(WINDOW *win, enum scroll_direction direction);
 
 void display_onepage(WINDOW *win, enum scroll_direction direction);
 
+void display_position_cursor_horizontally(WINDOW *win, buffer_t *p_buffer, bool shouldRedraw);
+
 #endif

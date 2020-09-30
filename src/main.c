@@ -138,7 +138,7 @@ static void destroy(void)
     // Clean up everything
     curses_clean();
     line_clean();
-    buffer_clean(buffer);
+    buffer_clean();
     cursor_clean();
     file_clean();
     statusbar_clean();

@@ -88,7 +88,7 @@ line_t *line_addFile(buffer_t *p_buffer)
 }
 
 /* Line delete stupid solution*/
-
+// TODO: line_t return value
 void line_delete(enum line_delete_flag flag, buffer_t *p_buffer)
 {
     // Pointer to the line that will be deleted
