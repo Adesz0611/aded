@@ -6,7 +6,7 @@
 #include <string.h>
 
 #include "statusbar.h"
-#include "file.h"
+//#include "file.h"
 #include "buffer.h"
 #include "cursor.h"
 
@@ -46,9 +46,9 @@ void statusbar_display(void)
     int i;
     
     wattron(statusbar->window, A_REVERSE);
-    mvwprintw(statusbar->window, 0, 0, " %s", file->filename);
+    mvwprintw(statusbar->window, 0, 0, " %s", buffer->filename);
 
-    for(i = file->name_length + 1; i < STATUSBAR_WINDOW_WIDTH - ROWS_COLS_MARGIN; i++)
+    for(i = buffer->name_length + 1; i < STATUSBAR_WINDOW_WIDTH - ROWS_COLS_MARGIN; i++)
         waddch(statusbar->window, ' ');
 
     statusbar_rows_cols();

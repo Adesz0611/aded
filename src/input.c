@@ -45,7 +45,7 @@ void input(void)
             exit(EXIT_SUCCESS);
             break;
         case KEY_F(5):
-            file_save();
+            file_save(buffer);
             break;
         case ENTER:
             enter();

@@ -7,6 +7,8 @@
 
 #include <stdio.h>
 
+#include "defs.h"
+
 /* Buffer contains the file's text. It is a doubly linked list structure.
  * Also contains the cursor position in the file. And the number of lines
  * in the buffer.
@@ -20,6 +22,13 @@ typedef struct buffer_t {
     size_t cursY; /* Current row in the file */
 
     size_t cursXsh; /* Column where cursor should be */
+
+
+    char filename[MAX_FILENAME]; /* File's name that is open in the buffer */
+    size_t name_size; /* Filename's size in bytes */
+    size_t name_length; /* Filename's length in characters */
+
+    bool fileExist;
 
     size_t numlines; // Number of lines in the buffer
 } buffer_t;

@@ -16,13 +16,6 @@
 #include "line.h"
 #include "file.h"
 
-file_t *file;
-
-void file_init(void)
-{
-   file = (file_t *)malloc(sizeof(*file));
-   memset(file, 0, sizeof(*file));
-}
 
 bool file_exist(const char *path)
 {
@@ -33,14 +26,14 @@ bool file_exist(const char *path)
     return true;
 }
 
-void file_save(void)
+void file_save(buffer_t *p_buff)
 {
     line_t *tmp;
-    FILE *f = fopen(file->filename, "w");
+    FILE *f = fopen(p_buff->filename, "w");
 
     if (f == NULL)
     {
-        fprintf(stderr, "Error while saving %s: %s\n", file->filename, strerror(errno));
+        fprintf(stderr, "Error while saving %s: %s\n", p_buff->filename, strerror(errno));
         sleep(3);
         exit(EXIT_FAILURE);
         return;
@@ -53,7 +46,7 @@ void file_save(void)
     fclose(f);
 }
 
-void file_load(const char *path)
+void file_load(buffer_t *p_buff, const char *path)
 {
     FILE *tmp_file = fopen(path, "r");
     line_t *tmp_line = line_head->next;
@@ -63,7 +56,7 @@ void file_load(const char *path)
     // Check the file is loaded
     if(tmp_file == NULL)
     {
-        fprintf(stderr, "Error while loading %s: %s\n", file->filename, strerror(errno));
+        fprintf(stderr, "Error while loading %s: %s\n", p_buff->filename, strerror(errno));
         sleep(3);
         exit(EXIT_FAILURE);
     }
@@ -96,9 +89,4 @@ void file_load(const char *path)
     }
 
     fclose(tmp_file);
-}
-
-void file_clean(void)
-{
-    free(file);
 }
