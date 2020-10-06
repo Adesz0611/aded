@@ -4,11 +4,6 @@
  *
  *  This file contains all of routines
  *  that connects to status bar.
- *  
- *  Read before start to hack:
- *  
- *  - Use 4 spaces instead of tab
- *  - Only use libncurses, one framework is enough
  *       
  */
 #ifndef STATUSBAR_H
@@ -33,6 +28,7 @@ typedef struct _Statusbar {
 extern Statusbar *statusbar;
 
 void statusbar_init(enum statusbar_position_enum stbar_pos);
+void statusbar_rows_cols(void);
 void statusbar_display(void);
 void statusbar_clean(void);
 

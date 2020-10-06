@@ -7,6 +7,7 @@
 #include <string.h>
 #include <errno.h>
 #include <locale.h>
+#include <wchar.h>
 
 #include "types.h"
 #include "defs.h"
@@ -19,7 +20,6 @@
 #include "version.h"
 #include "statusbar.h"
 #include "cursor.h"
-#include "utf8.h"
 #include "debug.h"
 
 #if __unix__
@@ -63,7 +63,7 @@ int main (int argc, const char *argv[])
 
             scpy(file->filename, argv[1]);
  
-            file->name_length = utf8_strlen(file->filename);
+            file->name_length = wcslen(file->filename);
             file->name_size = strlen(file->filename);
 
             // Check the file is exist or not
@@ -101,13 +101,13 @@ int main (int argc, const char *argv[])
     statusbar_init(STBAR_POS_BOTTOM);
 
     
-    display_buffer(main_window, offset->line_yOffset, 0, WINDOW_HEIGHT(main_window));
+    full_redraw(main_window);
+    statusbar_display();
     
     while(1)
     {
-        statusbar_display();
+        statusbar_rows_cols();
         wmove(main_window, cursor->cursY, cursor->cursX);
-        DEBUGF("%d\n", buffer->numlines);
         input();
     }
     
@@ -119,6 +119,7 @@ static void emergencyexit()
 {
     // Doesn't ask that you whould like to quit
     // just exit without saving
+    destroy();
     exit(EXIT_FAILURE);
 }
 #endif
