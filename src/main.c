@@ -56,25 +56,24 @@ int main (int argc, const char *argv[])
         else
         {
             // init
-            line_init();
             buffer_init();
-
+            line_init(buffer);
 
             scpy(buffer->filename, argv[1]);
  
-            buffer->name_length = wcslen(buffer->filename);
+            buffer->name_length = wcslen((wchar_t*)buffer->filename);
             buffer->name_size = strlen(buffer->filename);
 
             // Check the file is exist or not
             if(file_exist(buffer->filename))
             {
-                offset->line_yOffset = line_current = line_addFile(buffer); // First line
+                buffer->line_yOffset = buffer->line_current = line_addFile(buffer); // First line
                 buffer->fileExist = true;
                 file_load(buffer, buffer->filename);
             }
             else
             {
-                offset->line_yOffset = line_add("", buffer); // First line
+                buffer->line_yOffset = line_add("", buffer); // First line
                 buffer->fileExist = false;
             }
         }
@@ -84,10 +83,10 @@ int main (int argc, const char *argv[])
     else
     {
         // init
-        line_init();
         buffer_init();
+        line_init(buffer);
 
-        offset->line_yOffset = line_current = line_add("", buffer); // First line
+        buffer->line_yOffset = buffer->line_current = line_add("", buffer); // First line
     }
 
 
@@ -136,7 +135,7 @@ static void destroy(void)
 {
     // Clean up everything
     curses_clean();
-    line_clean();
+    line_clean(buffer);
     buffer_clean();
     cursor_clean();
     statusbar_clean();

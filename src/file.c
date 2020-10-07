@@ -39,7 +39,7 @@ void file_save(buffer_t *p_buff)
         return;
     }
 
-    for(tmp = line_head->next; tmp != NULL; tmp = tmp->next)
+    for(tmp = buffer->line_head->next; tmp != NULL; tmp = tmp->next)
     {
         fprintf(f, "%s", tmp->buffer);
     }
@@ -49,7 +49,7 @@ void file_save(buffer_t *p_buff)
 void file_load(buffer_t *p_buff, const char *path)
 {
     FILE *tmp_file = fopen(path, "r");
-    line_t *tmp_line = line_head->next;
+    line_t *tmp_line = buffer->line_head->next;
     wchar_t c;
     size_t i = 0;
 

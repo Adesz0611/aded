@@ -52,7 +52,7 @@ void curses_resize()
         int tmp_diff = cursor->cursY + 1 - WINDOW_HEIGHT(main_window);
         for(int i = 0; i < tmp_diff; i++)
         {
-            offset->line_yOffset = offset->line_yOffset->next;
+            buffer->line_yOffset = buffer->line_yOffset->next;
         }
         cursor->cursY = WINDOW_HEIGHT(main_window) - 1;
     }
@@ -61,11 +61,11 @@ void curses_resize()
     // Check horizontally
     if(cursor->cursX + 1 > WINDOW_WIDTH(main_window))
     {
-        offset->xOffset = buffer->cursX - WINDOW_WIDTH(main_window) + XSCROLL_VALUE;
+        buffer->xOffset = buffer->cursX - WINDOW_WIDTH(main_window) + XSCROLL_VALUE;
         cursor->cursX = WINDOW_WIDTH(main_window) - XSCROLL_VALUE;
     }
 
-    display_buffer(main_window, offset->line_yOffset, 0, WINDOW_HEIGHT(main_window));
+    display_buffer(main_window, buffer->line_yOffset, 0, WINDOW_HEIGHT(main_window));
 }
 
 void curses_clean(void)

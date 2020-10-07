@@ -6,9 +6,10 @@
 #define DISPLAY_H
 
 #include "curses.h"
+#include "buffer.h"
 #include "line.h"
 
-#define full_redraw(win)        display_buffer(win, offset->line_yOffset, getbegy(win), WINDOW_HEIGHT(win));
+#define full_redraw(win)        display_buffer(win, buffer->line_yOffset, getbegy(win), WINDOW_HEIGHT(win));
 
 #define display_page_up(win)    display_onepage(win, BACKWARD)
 #define display_page_down(win)  display_onepage(win, FORWARD)

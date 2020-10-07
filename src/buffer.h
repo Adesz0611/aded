@@ -7,6 +7,8 @@
 
 #include <stdio.h>
 
+//#include "line.h"
+#include "line_defs.h"
 #include "defs.h"
 
 /* Buffer contains the file's text. It is a doubly linked list structure.
@@ -23,10 +25,19 @@ typedef struct buffer_t {
 
     size_t cursXsh; /* Column where cursor should be */
 
-
+    // File
     char filename[MAX_FILENAME]; /* File's name that is open in the buffer */
     size_t name_size; /* Filename's size in bytes */
     size_t name_length; /* Filename's length in characters */
+
+    // Line pointers to linked list's element
+    line_t *line_head; /* The first/head element of line's doubly linked list */
+    line_t *line_tail; /* The last/tail element of line's doubly linked list */
+    line_t *line_current; /* The pointer of current line where cursor is */
+
+    // Offsets
+    line_t *line_yOffset; /* The top line of window (Vertical offset) */
+    size_t xOffset; /* Horizontal offset */
 
     bool fileExist;
 
