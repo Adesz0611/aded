@@ -62,12 +62,6 @@ void display_line(WINDOW *win, line_t *line, int y, int x, int n)
         waddstr(win, "¶");
 #endif
     // TODO:
-/*
-    for(int i = 0; i < n && line->buffer[i] != NULL; i++)
-    {
-
-    }
-*/
 }
 
 void display_scroll(WINDOW *win, enum scroll_direction direction)
@@ -112,6 +106,7 @@ void display_onepage(WINDOW *win, enum scroll_direction direction)
             buffer->cursY = buffer->numlines - 1;
             cursor->cursY = WINDOW_HEIGHT(win) - 1;
             buffer->line_current = buffer->line_tail;
+            display_position_cursor_horizontally(main_window, buffer, true);
         }
     }
     else
@@ -138,6 +133,7 @@ void display_onepage(WINDOW *win, enum scroll_direction direction)
                 cursor->cursY = 0;
                 buffer->cursY = 0;
                 buffer->line_current = buffer->line_head->next;
+                display_position_cursor_horizontally(main_window, buffer, true);
             }
         }
     }
@@ -146,28 +142,51 @@ void display_onepage(WINDOW *win, enum scroll_direction direction)
 // position the cursor horizantally and if needed redraw the screen
 void display_position_cursor_horizontally(WINDOW *win, buffer_t *p_buffer, bool shouldRedraw)
 {
-    if(p_buffer->line_current->size - 1 < p_buffer->cursX)
+    if(p_buffer->line_current->size - 1 < p_buffer->cursXsh)
     {
         p_buffer->cursX = p_buffer->line_current->size - 1;
 
-        if((size_t)WINDOW_WIDTH(win) < p_buffer->line_current->size - 1)
+        if(WINDOW_WIDTH(win) + p_buffer->xOffset <= p_buffer->cursX)
         {
-            if(p_buffer->xOffset < p_buffer->line_current->size - 1)
-                cursor->cursX = p_buffer->line_current->size - 1 - p_buffer->xOffset;
-            else
+            cursor->cursX = WINDOW_WIDTH(win) - XSCROLL_VALUE;
+            p_buffer->xOffset = p_buffer->cursX - WINDOW_WIDTH(win) + XSCROLL_VALUE;
+            if(shouldRedraw)
+                full_redraw(win);
+        }
+        else if(p_buffer->cursX < p_buffer->xOffset)
+        {
+            if((size_t)WINDOW_WIDTH(win) < p_buffer->cursX)
             {
                 cursor->cursX = WINDOW_WIDTH(win) - XSCROLL_VALUE;
-                p_buffer->xOffset = p_buffer->cursX - WINDOW_WIDTH(win) + XSCROLL_VALUE; //You can use line_current->size - 1 instead of buffer->cursX
-                if(shouldRedraw)
-                    full_redraw(win);
+                p_buffer->xOffset = p_buffer->cursX - WINDOW_WIDTH(win) + XSCROLL_VALUE;
             }
+            else
+            {
+                cursor->cursX = p_buffer->cursX;
+                p_buffer->xOffset = 0;
+            }
+
+            if(shouldRedraw)
+                full_redraw(win);
+        }
+        else
+            cursor->cursX = p_buffer->cursX - p_buffer->xOffset;
+    }
+    else
+    {
+        if(WINDOW_WIDTH(win) + p_buffer->xOffset <= p_buffer->cursXsh)
+        {
+            p_buffer->cursX = p_buffer->cursXsh;
+
+            cursor->cursX = WINDOW_WIDTH(win) - XSCROLL_VALUE;
+            p_buffer->xOffset = p_buffer->cursX - WINDOW_WIDTH(win) + XSCROLL_VALUE;
+            if(shouldRedraw)
+                full_redraw(win);
         }
         else
         {
-            cursor->cursX = p_buffer->line_current->size - 1;
-            p_buffer->xOffset = 0;
-            if(shouldRedraw)
-                full_redraw(win);
+            p_buffer->cursX = p_buffer->cursXsh;
+            cursor->cursX = p_buffer->cursXsh - p_buffer->xOffset;
         }
     }
 }

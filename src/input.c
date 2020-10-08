@@ -55,11 +55,6 @@ void input(void)
         case KEY_BACKSPACE:
             if(buffer->cursX > 0)
             {
-
-                //memmove(&line_current->buffer[buffer->cursX - 1], &line_current->buffer[buffer->cursX], line_current->size + 1 - buffer->cursX);
-                //line_current->buffer[line_current->size] = '\0';
-
-                
                 memmove(&buffer->line_current->buffer[buffer->cursX - 1], &buffer->line_current->buffer[buffer->cursX], buffer->line_current->size - buffer->cursX);
                 buffer->line_current->buffer[buffer->line_current->size - 1] = '\0';
 
@@ -94,6 +89,7 @@ void input(void)
 
                 cursor->cursX--;
                 buffer->cursX--;
+                buffer->cursXsh = buffer->cursX;
                 buffer->line_current->size--;
             }
             else
@@ -203,6 +199,7 @@ void input(void)
                     cursor->cursX++;
                 }
                 buffer->cursX++;
+                buffer->cursXsh = buffer->cursX;
             }
             break;
     }
@@ -257,6 +254,7 @@ static void enter(void)
 
     cursor->cursX = 0;
     buffer->cursX = 0;
+    buffer->cursXsh = 0;
 }
 
 #if ALLOW_HOME_AND_END_KEY
@@ -265,6 +263,7 @@ static void move_home(void)
     bool shouldRedraw = (buffer->xOffset) ? true : false;
     cursor->cursX = 0;
     buffer->cursX = 0;
+    buffer->cursXsh = 0;
     buffer->xOffset = 0;
 
     if(shouldRedraw)
@@ -274,6 +273,7 @@ static void move_home(void)
 static void move_end(void)
 {
     buffer->cursX = buffer->line_current->size - 1;
+    buffer->cursXsh = buffer->cursX;
 
     if(buffer->line_current->size - 1 - buffer->xOffset >= (size_t)WINDOW_WIDTH(main_window))
     {
@@ -347,7 +347,6 @@ static void move_left(void)
                 buffer->xOffset -= XSCROLL_VALUE;
                 cursor->cursX += XSCROLL_VALUE - 1;
             }
-//            display_buffer(main_window, offset->line_yOffset, 0, WINDOW_HEIGHT(main_window));
             full_redraw(main_window);
         }
 
@@ -355,6 +354,7 @@ static void move_left(void)
             cursor->cursX--;
 
         buffer->cursX--;
+        buffer->cursXsh = buffer->cursX;
     }
     else
     {
@@ -372,18 +372,16 @@ static void move_left(void)
             }
 
             else
-            {
                 cursor->cursY--;
-                buffer->cursY--;
-            }
             
+            buffer->cursY--;
+
             buffer->cursX = buffer->line_current->size - 1;
+            buffer->cursXsh = buffer->cursX;
             if((int)buffer->line_current->size - 1 >= WINDOW_WIDTH(main_window))
             {
                 cursor->cursX = WINDOW_WIDTH(main_window) - XSCROLL_VALUE;
                 buffer->xOffset = buffer->cursX - WINDOW_WIDTH(main_window) + XSCROLL_VALUE; 
-                //line_current->size - XSCROLL_VALUE - 1;
-                //display_buffer(main_window, offset->line_yOffset, 0, WINDOW_HEIGHT(main_window));
                 full_redraw(main_window);
             }
             else
@@ -400,13 +398,13 @@ static void move_right(void)
         {
             buffer->xOffset += XSCROLL_VALUE;
             cursor->cursX -= XSCROLL_VALUE - 1;
-            //display_buffer(main_window, offset->line_yOffset, 0, WINDOW_HEIGHT(main_window));
             full_redraw(main_window);
         }
         else
             cursor->cursX++;
         
         buffer->cursX++;
+        buffer->cursXsh = buffer->cursX;
     }
 
     else
@@ -424,20 +422,19 @@ static void move_right(void)
             }
 
             else
-            {
                 cursor->cursY++;
-                buffer->cursY++;
-            }
             
+            buffer->cursY++;
+
             if(buffer->xOffset != 0)
             {
                 buffer->xOffset = 0;
-                //display_buffer(main_window, offset->line_yOffset, 0, WINDOW_HEIGHT(main_window));
                 full_redraw(main_window);
             }
 
             cursor->cursX = 0;
             buffer->cursX = 0;
+            buffer->cursXsh = 0;
             buffer->xOffset = 0;
         }
     }
@@ -460,7 +457,6 @@ static void tab(void)
         buffer->xOffset += XSCROLL_VALUE + tmp_tabsize;
         cursor->cursX -= XSCROLL_VALUE;
 
-        //display_buffer(main_window, offset->line_yOffset, 0, WINDOW_HEIGHT(main_window));
         full_redraw(main_window);
     }
     else
@@ -482,4 +478,5 @@ static void tab(void)
     }
 
     buffer->cursX += tmp_tabsize;
+    buffer->cursXsh = buffer->cursX;
 }
