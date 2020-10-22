@@ -278,7 +278,6 @@ static void move_end(void)
     if(buffer->line_current->size - 1 - buffer->xOffset >= (size_t)WINDOW_WIDTH(main_window))
     {
         cursor->cursX = WINDOW_WIDTH(main_window) - XSCROLL_VALUE;
-        //offset->xOffset = line_current->size - XSCROLL_VALUE - 1;
         buffer->xOffset = buffer->cursX - WINDOW_WIDTH(main_window) + XSCROLL_VALUE;
 
         display_buffer(main_window, buffer->line_yOffset, 0, WINDOW_HEIGHT(main_window));

@@ -1,7 +1,7 @@
 TODO:
 =====
-- implement PageUp and PageDown (FIX if the buffer cursX is bigger than the scrolled line size)
-- don't need to refresh statusbar every time
+- Implement Unicode support
+- Implement a function which prints a given string to the statusbar
 
 DONE:
 =====
@@ -26,3 +26,5 @@ DONE:
 - fix vertical resize
 - Fix move down
 - Fix move up
+- implement PageUp and PageDown (FIX if the buffer cursX is bigger than the scrolled line size)
+- don't need to refresh statusbar every time

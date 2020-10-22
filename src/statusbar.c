@@ -6,7 +6,6 @@
 #include <string.h>
 
 #include "statusbar.h"
-//#include "file.h"
 #include "buffer.h"
 #include "cursor.h"
 
