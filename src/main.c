@@ -8,6 +8,7 @@
 #include <errno.h>
 #include <locale.h>
 #include <wchar.h>
+#include <getopt.h>
 
 #include "types.h"
 #include "defs.h"
@@ -31,7 +32,13 @@ static void emergencyexit();
 static void usage(void);
 static void destroy(void);
 
-int main (int argc, const char *argv[])
+static struct option long_options[] = {
+    { "help",    no_argument, 0, 'h' },
+    { "version", no_argument, 0, 'v' },
+    { 0, 0, 0, 0 },
+};
+
+int main (int argc, char *argv[])
 {
     setlocale(LC_ALL, "");
 
@@ -40,49 +47,51 @@ int main (int argc, const char *argv[])
     signal(SIGTERM, emergencyexit);
 #endif
 
-    
-    if(argc > 1)
-    {
-        if(!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help"))
-        {
-            usage();
-            return EXIT_FAILURE;
-        }
-        
-        else if(!strcmp(argv[1], "--version"))
-        {
-            version();
-            return EXIT_FAILURE;
-        }
-        else
-        {
-            // init
-            buffer_init();
-            line_init(buffer);
-
-            scpy(buffer->filename, argv[1]);
- 
-            buffer->name_length = utf8_strlen(buffer->filename);
-            buffer->name_size = strlen(buffer->filename); // Size of the buffer name in bytes
-
-            // Check the file is exist or not
-            if(file_exist(buffer->filename))
-            {
-                buffer->line_yOffset = buffer->line_current = line_addFile(buffer); // First line
-                buffer->fileExist = true;
-                file_load(buffer, buffer->filename);
-            }
-            else
-            {
-                buffer->line_yOffset = line_add("", buffer); // First line
-                buffer->fileExist = false;
-            }
+    int long_index = 0;
+    int opt = 0;
+    optind = 0;
+    while ((opt = getopt_long(argc, argv, ":hv",
+                long_options, &long_index )) != -1) {
+        switch (opt) {
+            case 'h':
+                usage();
+                return EXIT_FAILURE;
+            case 'v':
+                version();
+                return EXIT_FAILURE;
+            case '?':
+                fprintf (stderr, "%s: Unknown option: \"%s\"\n\n", PROGRAM_NAME, argv[optind - 1]);
+                usage();
+                return EXIT_FAILURE;
         }
     }
     
+    if (optind < argc) {
+        // TODO: multiple file support
+
+        buffer_init();
+        line_init(buffer);
+
+        scpy(buffer->filename, argv[optind]);
+
+        buffer->name_length = utf8_strlen(buffer->filename);
+        buffer->name_size = strlen(buffer->filename); // Size of the buffer name in bytes
+
+        // Check the file is exist or not
+        if(file_exist(buffer->filename))
+        {
+            buffer->line_yOffset = buffer->line_current = line_addFile(buffer); // First line
+            buffer->fileExist = true;
+            file_load(buffer, buffer->filename);
+        }
+        else
+        {
+            buffer->line_yOffset = line_add("", buffer); // First line
+            buffer->fileExist = false;
+        }
+    }
     // If there is no argument
-    else
-    {
+    else {
         // init
         buffer_init();
         line_init(buffer);
@@ -90,9 +99,7 @@ int main (int argc, const char *argv[])
         buffer->line_yOffset = buffer->line_current = line_add("", buffer); // First line
     }
 
-
     atexit(destroy);
-
 
     curses_init();
     cursor_init();
@@ -115,8 +122,6 @@ int main (int argc, const char *argv[])
 #if __unix__
 static void emergencyexit()
 {
-    // Doesn't ask that you whould like to quit
-    // just exit without saving
     destroy();
     exit(EXIT_FAILURE);
 }
@@ -127,8 +132,8 @@ static void usage(void)
     printf("Usage: %s [options] filename\n", PROGRAM_NAME);
     fputs(
         "Options:\n"
-        "         --help     display help then exit\n"
-        "         --version  display version informations then exit\n",
+        "         -h, --help     display help then exit\n"
+        "         -v, --version  display version informations then exit\n",
     stdout);
 }
 
