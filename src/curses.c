@@ -66,6 +66,7 @@ void curses_resize()
     }
 
     display_buffer(main_window, buffer->line_yOffset, 0, WINDOW_HEIGHT(main_window));
+    statusbar_display();
 }
 
 void curses_clean(void)

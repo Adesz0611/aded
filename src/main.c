@@ -21,6 +21,7 @@
 #include "statusbar.h"
 #include "cursor.h"
 #include "debug.h"
+#include "utf8.h"
 
 #if __unix__
 #include <signal.h>
@@ -61,8 +62,8 @@ int main (int argc, const char *argv[])
 
             scpy(buffer->filename, argv[1]);
  
-            buffer->name_length = wcslen((wchar_t*)buffer->filename);
-            buffer->name_size = strlen(buffer->filename);
+            buffer->name_length = utf8_strlen(buffer->filename);
+            buffer->name_size = strlen(buffer->filename); // Size of the buffer name in bytes
 
             // Check the file is exist or not
             if(file_exist(buffer->filename))

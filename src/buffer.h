@@ -23,6 +23,8 @@ typedef struct buffer_t {
     size_t cursY; /* Current row in the file */
 
     size_t cursXsh; /* Column where cursor should be */
+    size_t cursRX; /* Column number that is going to be display at statusbar */
+    /* Readable column where the cursor is in the file(Unicode) */
 
     // File
     char filename[MAX_FILENAME]; /* File's name that is open in the buffer */
@@ -37,6 +39,7 @@ typedef struct buffer_t {
     // Offsets
     line_t *line_yOffset; /* The top line of window (Vertical offset) */
     size_t xOffset; /* Horizontal offset */
+    size_t xROffset; /* Real horizontal offset (Unicode) */
 
     bool fileExist;
 

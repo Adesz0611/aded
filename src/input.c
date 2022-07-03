@@ -17,6 +17,7 @@
 #include "cursor.h"
 #include "types.h"
 #include "display.h"
+#include "utf8.h"
 
 static wchar_t input_wchar;
 
@@ -55,19 +56,32 @@ void input(void)
         case KEY_BACKSPACE:
             if(buffer->cursX > 0)
             {
-                memmove(&buffer->line_current->buffer[buffer->cursX - 1], &buffer->line_current->buffer[buffer->cursX], buffer->line_current->size - buffer->cursX);
+                //FIXME:
+                while(!isutf8(buffer->line_current->buffer[--buffer->cursX])) {
+                    memmove(&buffer->line_current->buffer[buffer->cursX], &buffer->line_current->buffer[buffer->cursX + 1], buffer->line_current->size - buffer->cursX);
+                    buffer->line_current->buffer[buffer->line_current->size - 1] = '\0';
+                    buffer->line_current->size--;
+                }
+                memmove(&buffer->line_current->buffer[buffer->cursX], &buffer->line_current->buffer[buffer->cursX + 1], buffer->line_current->size - buffer->cursX);
                 buffer->line_current->buffer[buffer->line_current->size - 1] = '\0';
+                buffer->line_current->size--;
+
+                buffer->cursRX--;
+
+                /*TODO: Itt tartok */
 
                 if(cursor->cursX < 1)
                 {
-                    if(buffer->cursX < XSCROLL_VALUE)
+                    if(buffer->cursRX < XSCROLL_VALUE)
                     {
-                        buffer->xOffset -= buffer->cursX;
-                        cursor->cursX += buffer->cursX;
+                        buffer->xOffset = buffer->xROffset = 0;
+                        //cursor->cursX += buffer->cursX;
+                        cursor->cursX = buffer->cursRX;
                     }
                     else
                     {
-                        buffer->xOffset -= XSCROLL_VALUE;
+                        buffer->xROffset -= XSCROLL_VALUE;
+                        buffer->xOffset -= utf8_iterate_backward(buffer->line_current->buffer, buffer->cursX, XSCROLL_VALUE);
                         cursor->cursX += XSCROLL_VALUE;
                     }
 
@@ -170,37 +184,61 @@ void input(void)
             move_right();
             break;
         default:
-            if(isascii(input_wchar))
+            memmove(&buffer->line_current->buffer[buffer->cursX + 1], &buffer->line_current->buffer[buffer->cursX], buffer->line_current->size - buffer->cursX);
+            buffer->line_current->buffer[buffer->cursX] = input_wchar;
+            buffer->cursX++;
+            buffer->line_current->size++;
+
+            // TODO: Gondolkodni jobb megoldáson
+            // Függvénybe rakni a keyboard_inputot
+            if(!isascii(input_wchar)) {
+            nodelay(main_window, TRUE);
+            // Read the remaining characters
+            while(1)
             {
+                input_wchar = wgetch(main_window);
+                if(input_wchar == ERR)
+                    break;
                 memmove(&buffer->line_current->buffer[buffer->cursX + 1], &buffer->line_current->buffer[buffer->cursX], buffer->line_current->size - buffer->cursX);
                 buffer->line_current->buffer[buffer->cursX] = input_wchar;
                 buffer->line_current->size++;
+                buffer->cursX++;
 
-                if(cursor->cursX > WINDOW_WIDTH(main_window) - 2)
+                if(isutf8(input_wchar))
+                    cursor->cursX++;
+            }
+            nodelay(main_window, FALSE);
+            }
+
+            if(cursor->cursX > WINDOW_WIDTH(main_window) - 2)
+            {
+                buffer->xOffset += XSCROLL_VALUE;
+                cursor->cursX -= XSCROLL_VALUE - 1;
+                display_buffer(main_window, buffer->line_yOffset, 0, WINDOW_HEIGHT(main_window));
+            }
+            else
+            {
+            /*
+                // If statements for drawing
+                if(buffer->line_current->size - 1 - buffer->xOffset > (size_t)WINDOW_WIDTH(main_window))
                 {
-                    buffer->xOffset += XSCROLL_VALUE;
-                    cursor->cursX -= XSCROLL_VALUE - 1;
-                    display_buffer(main_window, buffer->line_yOffset, 0, WINDOW_HEIGHT(main_window));
+                    display_blankRow(main_window, cursor->cursY, cursor->cursX, WINDOW_WIDTH(main_window) - cursor->cursX);
+                    display_line(main_window, buffer->line_current, cursor->cursY, cursor->cursX, WINDOW_WIDTH(main_window) - cursor->cursX);
                 }
                 else
                 {
-                    // If statements for drawing
-                    if(buffer->line_current->size - 1 - buffer->xOffset > (size_t)WINDOW_WIDTH(main_window))
-                    {
-                        display_blankRow(main_window, cursor->cursY, cursor->cursX, WINDOW_WIDTH(main_window) - cursor->cursX);
-                        display_line(main_window, buffer->line_current, cursor->cursY, cursor->cursX, WINDOW_WIDTH(main_window) - cursor->cursX);
-                    }
-                    else
-                    {
-                        display_blankRow(main_window, cursor->cursY, cursor->cursX, buffer->line_current->size - 1 - buffer->cursX);
-                        display_line(main_window, buffer->line_current, cursor->cursY, cursor->cursX, buffer->line_current->size - 1 - buffer->cursX);
-                    }
-                    
-                    cursor->cursX++;
+                    display_blankRow(main_window, cursor->cursY, cursor->cursX, buffer->line_current->size - 1 - buffer->cursX);
+                    display_line(main_window, buffer->line_current, cursor->cursY, cursor->cursX, buffer->line_current->size - 1 - buffer->cursX);
                 }
-                buffer->cursX++;
-                buffer->cursXsh = buffer->cursX;
+                
+                cursor->cursX++;
+            */
+                display_blankRow(main_window, cursor->cursY, 0, WINDOW_WIDTH(main_window));
+                display_line(main_window, buffer->line_current, cursor->cursY, 0, buffer->line_current->size);
+                cursor->cursX++;
             }
+            buffer->cursXsh = buffer->cursX;
+            buffer->cursRX++;
             break;
     }
 }

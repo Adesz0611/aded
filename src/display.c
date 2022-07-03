@@ -11,7 +11,9 @@
 #include "defs.h"
 #include "buffer.h"
 #include "cursor.h"
+#include "utf8.h"
 
+/* Display the current buffer */
 void display_buffer(WINDOW *win, line_t *line, int y, int nrow)
 {
     int i;
@@ -35,7 +37,7 @@ void display_blankRow(WINDOW *win, int y, int x, int n)
 {
     wmove(win, y, x);
 
-    for(; n > 0; n--)
+    while(n--)
         waddch(win, ' ');
 }
 
@@ -44,21 +46,16 @@ void display_blankRow(WINDOW *win, int y, int x, int n)
 /* Display n characters of a line*/
 void display_line(WINDOW *win, line_t *line, int y, int x, int n)
 {
-    /*
-    for(int i = x; i < x + n && line->buffer[i] != '\0'; i++)
-    {
-            #if DISPLAY_PILCROW_AS_NEWLINE
-            if(line->buffer[i + offset->xOffset] == '\n')
-                mvwprintw(win->window, y, i, "¶");
-            else
-            #endif
-                mvwprintw(win->window, y, i, "%c", line->buffer[i + offset->xOffset]);
-    }
-    */
     wmove(win, y, x);
-    waddnstr(win, &line->buffer[x + buffer->xOffset], n);
+    size_t real = 0;
+    for(int i = 0; real < n && line->buffer[x + i + buffer->xOffset] != '\0'; ++i) {
+        wprintw(win, "%c", line->buffer[x + i + buffer->xOffset]);
+        if(isutf8(line->buffer[x + i + buffer->xOffset]))
+            real++;
+    }
+
 #if DISPLAY_PILCROW_AS_NEWLINE
-    if(buffer->line->buffer[buffer->line->size - 1] == '\n')
+    if(line->buffer[line->size - 1] == '\n')
         waddstr(win, "¶");
 #endif
     // TODO:

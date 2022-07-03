@@ -2,6 +2,7 @@ TODO:
 =====
 - Implement Unicode support
 - Implement a function which prints a given string to the statusbar
+- Faketabs/Realtabs to rc file
 
 DONE:
 =====

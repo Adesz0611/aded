@@ -45,12 +45,10 @@ buffer_t *buffer_add(void)
     }
     else
     {
-        buffer_t *buff_n = buffer->next;
-
-        buffer->next = p_buf;
+        p_buf->next = buffer->next;
         p_buf->prev = buffer;
-        p_buf->next = buff_n;
-        buff_n->prev = p_buf;
+        buffer->next = p_buf;
+        p_buf->next->prev = p_buf;
     }
 
     return p_buf;

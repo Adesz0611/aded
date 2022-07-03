@@ -11,7 +11,8 @@ enum line_delete_flag {
 
 typedef struct line_t{
     char *buffer;
-    size_t size;
+    size_t size; /* Number of bytes in buffer */
+    size_t sizeCh; /* Number of characters in buffer */
     struct line_t *prev;
     struct line_t *next;
 } line_t;

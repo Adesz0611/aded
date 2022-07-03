@@ -18,8 +18,6 @@ void line_init (buffer_t *p_buff)
     p_buff->line_head = (line_t *)malloc(sizeof(*p_buff->line_head));
     memset(p_buff->line_head, 0, sizeof(*p_buff->line_head));
 
-    p_buff->xOffset = 0;
-
     p_buff->line_tail = p_buff->line_head;
     p_buff->line_current = p_buff->line_head;
 }
